@@ -1,19 +1,15 @@
-<div class="panel-heading">
-  <h2 class="panel-title nm-section-title">
-    <a href="/modules/{{ModuleCode}}"><span class="highlight">{{ModuleCode}}</span>&nbsp;{{ModuleTitle}}</a>
-    <span class="mc">
-      {{ModuleCredit}} MCs
-    </span>
-  </h2>
-  <ul class="pagination pagination-sm semester-availability">
-    {{#each semestersOffered}}
-      <li{{#if offered}} class="active"{{/if}}><span>{{semester}}</span></li>
-    {{/each}}
-  </ul>
+<div>
+  <h5>
+    <a class="highlight" href="/modules/{{ModuleCode}}">
+      {{ModuleCode}} {{ModuleTitle}}
+    </a>
+    <span class="department">&middot; {{Department}}</span>
+    <span class="mc">&middot; {{ModuleCredit}} MCs</span>
+  </h5>
 </div>
-<div class="panel-body row">
+<div class="row">
   <dl class="col-sm-9">
-    <div class="description">{{ModuleDescription}}</div>
+    <p class="description">{{ModuleDescription}}</p>
     {{#if Prerequisite}}
       <dt>Prerequisites</dt>
       <dd>{{{linkedPrerequisite}}}</dd>
@@ -30,15 +26,22 @@
         {{/each}}
       {{/if}}
     {{/each}}
-  </dl>
-  <dl class="col-sm-3">
     {{#if Workload}}
       <dt>Workload</dt>
       <dd class="workload">{{Workload}}</dd>
     {{/if}}
+    <br>
+  </dl>
+  <dl class="col-sm-3">
+    <div> 
+      {{#each semestersOffered}}
+        {{#if offered}} <span class="label label-default">Sem {{semester}}</span> {{/if}}
+      {{/each}}
+    </div>
+    <hr class="hidden-xs">
     {{#if hasExams}}
       {{#each History}}
-        <dt>Semester {{Semester}} Exam</dt>
+        <dt>Sem {{Semester}} Exam</dt>
         <dd class="exam">
           {{#if examStr}}
             <span>{{examDateStr}}</span>
@@ -54,8 +57,7 @@
     {{/if}}
   </dl>
 </div>
-<div class="panel-footer clearfix">
-  <div class="department">{{Department}}</div>
+<div class="clearfix">
   <div class="buttons">
     <a class="cors btn btn-default btn-xs"
        {{#unless inCORS}}disabled="disabled"{{/unless}}
@@ -93,3 +95,4 @@
     </button>
   </div>
 </div>
+

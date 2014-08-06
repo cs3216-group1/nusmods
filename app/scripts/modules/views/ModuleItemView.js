@@ -6,7 +6,7 @@ var analytics = require('../../analytics');
 var template = require('../templates/module_item.hbs');
 
 module.exports = Marionette.ItemView.extend({
-  className: 'module-item panel panel-default',
+  className: 'module-item',
   template: template,
 
   events: {

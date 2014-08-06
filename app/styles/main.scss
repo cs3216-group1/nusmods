@@ -374,10 +374,18 @@ kbd {
 }
 
 // Module Finder Content
+.module-results {
+  padding: 0;
+}
+
 .module-item {
+  padding: 15px;
+  &:not(:first-child) {
+    border-top: 1px solid #ccc;
+  }
   .mc {
+    color: #999;
     font-weight: normal;
-    text-transform: none;
     white-space: nowrap;
   }
   .semester-availability {
@@ -386,6 +394,10 @@ kbd {
     span {
       padding: 4px 8px;
     }
+  }
+  hr {
+    margin-bottom: 10px;
+    margin-top: 10px;
   }
   dl {
     margin-bottom: 0;
@@ -411,11 +423,9 @@ kbd {
     font-weight: bold;
   }
   @media (min-width: 640px) {
-    .department {
-      float: left;
-    }
     .buttons {
-      float: right;
+      float: left;
+      margin-top: 10px;
     }
   }
 }
@@ -439,12 +449,11 @@ dd.lecturer {
 
 .nm-module-facet {
   border-radius: 0;
-  border-top: 1px solid #ccc;
   box-shadow: none;
   margin-bottom: 0 !important;
   padding: 0 15px;
-  &:first-child {
-    border-top: none;
+  &:not(:first-child) {
+    border-top: 1px solid #ccc;
   }
   .nm-section-heading {
     cursor: pointer;
