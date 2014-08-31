@@ -121,6 +121,7 @@ App.on('start', function () {
   require('./modules');
   require('./timetable');
   // require('ivle');
+  require('./friends');
   require('./preferences');
 
   // footer modules
