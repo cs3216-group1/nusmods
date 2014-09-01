@@ -7,7 +7,7 @@ var _ = require('underscore');
 var template = require('../templates/table.hbs');
 
 module.exports = Marionette.CompositeView.extend({
-  id: 'timetable',
+  className: 'timetable',
   tagName: 'table',
   childView: LessonView,
   childViewOptions: function () {

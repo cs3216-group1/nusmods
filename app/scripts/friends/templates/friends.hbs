@@ -2,6 +2,42 @@
   <div class="col-md-12" id="user-profile">
     <h1>Friends' Timetables</h1>
     <hr>
-    <p>Add your friends' timetables here.</p>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="well">
+          <div class="form-group">
+            <label for="name">Name of Friend</label>
+            <input type="text" class="form-control" id="name" placeholder="Enter friend's name" value="Yen Ling">
+          </div>
+          <div class="form-group">
+            <label for="url">Timetable URL</label>
+            <input type="url" class="form-control" id="url" value="http://modsn.us/M8WR3">
+          </div>
+          <button class="btn btn-default js-add-friend-timetable">Add</button>
+        </div>
+        <hr>
+        <div class="hide-title hide-room" id="friends-timetables">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h2 class="panel-title nm-section-title">Yen Ling</h2>
+            </div>
+            <div class="panel-body">
+              <div class="row">
+                <div class="col-md-12" id="timetable-friend"></div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h2 class="panel-title nm-section-title">My Own</h2>
+            </div>
+            <div class="panel-body">
+              <div class="col-md-12" id="timetable-friend2"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>

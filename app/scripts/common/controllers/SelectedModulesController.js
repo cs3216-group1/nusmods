@@ -16,8 +16,10 @@ module.exports = Marionette.Controller.extend({
       exams: this.exams,
       timetable: this.timetable
     });
-    this.listenTo(this.selectedModules, 'add remove', this.modulesChanged);
-    this.listenTo(this.timetable, 'change', this.modulesChanged);
+    if (options.personalTimetable) {
+      this.listenTo(this.selectedModules, 'add remove', this.modulesChanged);
+      this.listenTo(this.timetable, 'change', this.modulesChanged);
+    }
   },
 
   modulesChanged: function () {

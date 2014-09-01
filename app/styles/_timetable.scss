@@ -1,16 +1,22 @@
 // Common base timetable styles to be embedded in exported html as well as
 // imported into main styles.
 
-#timetable-wrapper {
+#timetable-wrapper,
+#friends-timetables {
   font-size: 11px;
   font-weight: bold;
   line-height: 13px;
 }
-#timetable {
+.timetable {
   width: 1159px;
   max-width: none;
   margin: 0 0 15px -20px;
   table-layout: fixed;
+}
+#friends-timetables {
+  .timetable {
+    width: 100%;
+  }
 }
 #times div {
   margin-right: -13px;

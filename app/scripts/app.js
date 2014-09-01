@@ -50,7 +50,8 @@ var selectedModulesControllers = [];
 
 for (var i = 0; i < 5; i++) {
   selectedModulesControllers[i] = new SelectedModulesController({
-    semester: i + 1
+    semester: i + 1,
+    personalTimetable: true
   });
 }
 
