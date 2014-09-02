@@ -12,13 +12,17 @@ var _ = require('underscore');
 module.exports = Marionette.LayoutView.extend({
   template: template,
   regions: {
-    timetableRegion: '#timetable-friend',
-    timetableRegion2: '#timetable-friend2'
+    timetableRegion: '#timetable-friend'
   },
   onShow: function () {
     this.selectedModules = App.request('selectedModules', 1);
     this.timetable = this.selectedModules.timetable;
-    this.timetableRegion2.show(new TimetableView({collection: this.timetable}));
+    var that = this;
+    localforage.getItem('friendTimetable', function (data) {
+      if (data) {
+        that.insertFriendTimetableFromQueryString(data.name, data.semester, data.queryString);
+      }
+    });
   },
   events: {
     'click .js-add-friend-timetable': 'getFinalTimetableUrl'
@@ -35,25 +39,31 @@ module.exports = Marionette.LayoutView.extend({
         timetable: timetableUrl
       },
       success: function(result){
-        that.insertFriendTimetable($('#name').val(), result.redirectedUrl);
+        that.insertFriendTimetableFromUrl($('#name').val(), result.redirectedUrl);
       },
       error: function(xhr, status, error){
         console.log(status);
       }
     });
   },
-  insertFriendTimetable: function (name, timetableUrl) {
+  insertFriendTimetableFromUrl: function (name, timetableUrl) {
     var urlFragments = timetableUrl.split('/');
     var queryFragments = urlFragments.slice(-1)[0].split('?');
     var semester = parseInt(queryFragments[0].slice(3));
     var timetableQueryString = queryFragments[1];
 
-    var selectedModules = TimetableModuleCollection.fromQueryStringToJSON(timetableQueryString);
+    this.insertFriendTimetableFromQueryString(name, semester, timetableQueryString);
+  },
+  insertFriendTimetableFromQueryString: function (name, semester, queryString) {
+    var selectedModules = TimetableModuleCollection.fromQueryStringToJSON(queryString);
     
     var selectedModulesController = new SelectedModulesController({
       semester: semester,
-      personalTimetable: false
+      personalTimetable: false,
+      name: name
     });
+
+    selectedModulesController.modulesChanged();
 
     _.map(selectedModules, function (module) {
       selectedModulesController.selectedModules.add({
@@ -64,5 +74,5 @@ module.exports = Marionette.LayoutView.extend({
 
     var timetable = new TimetableView({collection: selectedModulesController.selectedModules.timetable});
     this.timetableRegion.show(timetable);
-  }
+  } 
 });
