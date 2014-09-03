@@ -17,30 +17,12 @@ module.exports = Marionette.LayoutView.extend({
     friendsTimetableRegion: '#friends-timetables'
   },
   onShow: function () {
-    // this.selectedModules = App.request('selectedModules', 1);
-    // this.timetable = this.selectedModules.timetable;
-    
-    // localforage.getItem('friendTimetable', function (data) {
-    //   if (data) {
-    //     that.insertFriendTimetableFromQueryString(data.name, data.semester, data.queryString);
-    //   }
-    // });
-    var that = this;
-    var friendsTimetableList = [
-      { 
-        name: 'Yen Ling',
-        semester: 1,
-        queryString: 'CM1401[LEC]=SL1&CM1401[TUT]=FR1&LSM1101[LAB]=SB1&LSM1101[LEC]=SL1&LSM1101[TUT]=ST1&LSM1102[LAB]=SB1&LSM1102[LEC]=SL1&LSM1102[TUT]=ST1&CS1010S[LEC]=1&CS1010S[REC]=2&CS1010S[TUT]=4&SP2171[LEC]=SL1&SP2173[LAB]=SB1&SP2173[LEC]=SL1&SP2173[TUT]=ST1'
-      },
-      { name: 'Jenna',
-        semester: 1,
-        queryString: 'SSD1203[LEC]=1&SSD1203[TUT]=1&CS4243[LEC]=1&CS4243[LAB]=4&CS3241[LEC]=1&CS3241[TUT]=3&CS3241[LAB]=3&HR2002[TUT]=E32&HR2002[LEC]=E4&CS3244[LEC]=1&CS3244[TUT]=4&CG4001='
-      }
-    ];
-
-    this.friendsTimetableCollection = new Backbone.Collection(friendsTimetableList);
-    var friendsTimetableView = new FriendsTimetableView({collection: this.friendsTimetableCollection});
-    this.friendsTimetableRegion.show(friendsTimetableView);
+    var that = this; 
+    localforage.getItem('timetable:friends', function (data) {
+      that.friendsTimetableCollection = new Backbone.Collection(data);
+      var friendsTimetableView = new FriendsTimetableView({collection: that.friendsTimetableCollection});
+      that.friendsTimetableRegion.show(friendsTimetableView);
+    });
   },
   events: {
     'click .js-add-friend-timetable': 'getFinalTimetableUrl'
@@ -75,6 +57,8 @@ module.exports = Marionette.LayoutView.extend({
       semester: semester,
       queryString: timetableQueryString
     });
-    console.log(this.friendsTimetableCollection)
+
+    var friendsTimetableData = _.pluck(this.friendsTimetableCollection.models, 'attributes');
+    localforage.setItem('timetable:friends', friendsTimetableData);
   } 
 });

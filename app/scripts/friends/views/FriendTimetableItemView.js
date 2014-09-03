@@ -47,6 +47,9 @@ module.exports = Marionette.LayoutView.extend({
     this.friendTimetableRegion.show(timetable);
   },
   deleteFriendTimetable: function () {
-    this.model.collection.remove(this.model);
+    var friendsTimetableCollection = this.model.collection;
+    friendsTimetableCollection.remove(this.model);
+    var friendsTimetableData = _.pluck(friendsTimetableCollection.models, 'attributes');
+    localforage.setItem('timetable:friends', friendsTimetableData);
   }
 });

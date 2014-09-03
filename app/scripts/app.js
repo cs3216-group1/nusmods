@@ -163,6 +163,12 @@ App.on('start', function () {
       localforage.setItem(bookmarkedModulesNamespace, []);
     }
   });
+
+  localforage.getItem('timetable:friends', function (data) {
+    if (!data) {
+      localforage.setItem('timetable:friends', []);
+    }
+  })
 });
 
 module.exports = App;
