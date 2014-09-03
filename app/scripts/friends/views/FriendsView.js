@@ -38,8 +38,8 @@ module.exports = Marionette.LayoutView.extend({
       }
     ];
 
-    var friendsTimetableCollection = new Backbone.Collection(friendsTimetableList);
-    var friendsTimetableView = new FriendsTimetableView({collection: friendsTimetableCollection});
+    this.friendsTimetableCollection = new Backbone.Collection(friendsTimetableList);
+    var friendsTimetableView = new FriendsTimetableView({collection: this.friendsTimetableCollection});
     this.friendsTimetableRegion.show(friendsTimetableView);
   },
   events: {
@@ -70,6 +70,11 @@ module.exports = Marionette.LayoutView.extend({
     var semester = parseInt(queryFragments[0].slice(3));
     var timetableQueryString = queryFragments[1];
 
-    this.insertFriendTimetableFromQueryString(name, semester, timetableQueryString);
+    this.friendsTimetableCollection.add({
+      name: name,
+      semester: semester,
+      queryString: timetableQueryString
+    });
+    console.log(this.friendsTimetableCollection)
   } 
 });

@@ -11,7 +11,7 @@ var EmptyView = Marionette.ItemView.extend({
 
 module.exports = Marionette.CompositeView.extend({
   childView: FriendTimetableItemView,
-  childViewContainer: 'ul',
+  childViewContainer: 'div',
   emptyView: EmptyView,
   template: template
 });
