@@ -11,14 +11,14 @@ var SelectedModulesController = require('../../common/controllers/SelectedModule
 var FriendsTimetableView = require('./friendsTimetableView');
 
 module.exports = Marionette.LayoutView.extend({
-  initialize: function () {
-    console.log(this.model);
-  },
   tagName: 'div',
   className: 'panel panel-default',
   template: template,
   regions: {
     friendTimetableRegion: '.friend-timetable'
+  },
+  events: {
+    'click .js-delete-friend-timetable': 'deleteFriendTimetable'
   },
   onShow: function () {  
     this.generateTimetableFromQueryString(this.model.get('name'), 
@@ -45,5 +45,8 @@ module.exports = Marionette.LayoutView.extend({
 
     var timetable = new TimetableView({collection: selectedModulesController.selectedModules.timetable});
     this.friendTimetableRegion.show(timetable);
+  },
+  deleteFriendTimetable: function () {
+    this.model.collection.remove(this.model);
   }
 });
