@@ -9,7 +9,8 @@ var template = require('../templates/friends.hbs');
 var addFriendTimetableTemplate = require('../templates/add_friend_timetable.hbs');
 var TimetableModuleCollection = require('../../common/collections/TimetableModuleCollection');
 var SelectedModulesController = require('../../common/controllers/SelectedModulesController');
-var FriendsTimetableView = require('./friendsTimetableView');
+var FriendsTimetableView = require('./FriendsTimetableView');
+var FriendTimetableItemView = require('./FriendTimetableItemView');
 var _ = require('underscore');
 require('bootstrap/tooltip');
 require('bootstrap/popover');
@@ -17,7 +18,8 @@ require('bootstrap/popover');
 module.exports = Marionette.LayoutView.extend({
   template: template,
   regions: {
-    friendsTimetableRegion: '#friends-timetables'
+    friendsTimetableRegion: '#friends-timetables',
+    mergedTimetableRegion: '#merged-timetable'
   },
   ui: {
     'addButton': '.js-add-timetable-popover'
@@ -35,7 +37,8 @@ module.exports = Marionette.LayoutView.extend({
     });
   },
   events: {
-    'click .js-add-friend-timetable': 'getFinalTimetableUrl'
+    'click .js-add-friend-timetable': 'getFinalTimetableUrl',
+    'click .js-merge-timetables': 'mergeTimetables'
   },
   getFinalTimetableUrl: function () {
     var that = this;
@@ -71,5 +74,18 @@ module.exports = Marionette.LayoutView.extend({
 
     var friendsTimetableData = _.pluck(this.friendsTimetableCollection.models, 'attributes');
     localforage.setItem('timetable:friends', friendsTimetableData);
-  } 
+  },
+  mergeTimetables: function () {
+    var mergedQueryString = _.pluck(_.pluck(this.friendsTimetableCollection.models, 'attributes'), 'queryString').join('&');
+    // console.log(mergedQueryString);
+    var model = new Backbone.Model({
+      name: 'Merged Timetable',
+      semester: 1,
+      queryString: mergedQueryString
+    });
+    var friendTimetableItemView = new FriendTimetableItemView({
+      model: model
+    });
+    this.mergedTimetableRegion.show(friendTimetableItemView);
+  }
 });
