@@ -6,15 +6,21 @@ var App = require('../../app');
 var Marionette = require('backbone.marionette');
 var TimetableView = require('../../timetable/views/TableView');
 var template = require('../templates/friends.hbs');
+var addFriendTimetableTemplate = require('../templates/add_friend_timetable.hbs');
 var TimetableModuleCollection = require('../../common/collections/TimetableModuleCollection');
 var SelectedModulesController = require('../../common/controllers/SelectedModulesController');
 var FriendsTimetableView = require('./friendsTimetableView');
 var _ = require('underscore');
+require('bootstrap/tooltip');
+require('bootstrap/popover');
 
 module.exports = Marionette.LayoutView.extend({
   template: template,
   regions: {
     friendsTimetableRegion: '#friends-timetables'
+  },
+  ui: {
+    'addButton': '.js-add-timetable-popover'
   },
   onShow: function () {
     var that = this; 
@@ -22,6 +28,10 @@ module.exports = Marionette.LayoutView.extend({
       that.friendsTimetableCollection = new Backbone.Collection(data);
       var friendsTimetableView = new FriendsTimetableView({collection: that.friendsTimetableCollection});
       that.friendsTimetableRegion.show(friendsTimetableView);
+    });
+    this.ui.addButton.popover({
+      html: true,
+      content: addFriendTimetableTemplate()
     });
   },
   events: {
@@ -39,10 +49,11 @@ module.exports = Marionette.LayoutView.extend({
         timetable: timetableUrl
       },
       success: function(result){
+        that.ui.addButton.popover('hide');
         that.insertFriendTimetableFromUrl($('#name').val(), result.redirectedUrl);
       },
       error: function(xhr, status, error){
-        console.log(status);
+        alert(status);
       }
     });
   },
