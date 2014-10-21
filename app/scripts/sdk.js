@@ -1,8 +1,8 @@
 
-var server_host = "http://localhost:3000/";
+var server_host = "http://fvle.jishnumohan.com/";
 var redirect_url = window.location.origin + "/ivlelogin.html"
 
-var app_id = "ej4Nf2ID8IH1";
+var app_id = "TpEDc0QxMDPM";
 
 var login = function(){
     var url = server_host + "loginImplicit?clientId=" + app_id + 
