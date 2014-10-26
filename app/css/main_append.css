@@ -1,0 +1,11 @@
+/*this is a stylesheet that append to the main.css to achieve more functionalities*/
+
+
+
+/* hidden-lesson class */
+.lesson-hidden {
+  overflow: hidden;
+  padding: 1px 3px 3px;
+  border: 2px solid;
+  opacity: 0.3;
+}
