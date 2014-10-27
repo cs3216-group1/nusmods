@@ -53,6 +53,7 @@ module.exports = ModuleCollection.extend({
             var lesson = new LessonModel(_.extend({
               color: color,
               display: true,
+              hidden: true,
               isDraggable: isDraggable,
               ModuleCode: module.id,
               ModuleTitle: module.get('ModuleTitle'),

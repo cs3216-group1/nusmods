@@ -34,6 +34,15 @@ var LessonView = Marionette.ItemView.extend({
   },
 
   onRender: function() {
+    console.log("watch here: on render");
+    // console.log($(this.el);
+    //   $(this.el).dblclick(function(){
+    //     console.log("haha");
+    //   });
+    $(this.el).dblclick(function(){
+      console.log("DBCLICK!!!!!!!!!!!!!!!!");
+      $(this).fadeTo("slow", 0.2);
+    });
     this.$el.addClass('color' + this.model.get('color'));
     if (this.model.get('isDraggable')) {
       this.$el.addClass('ui-draggable');
@@ -145,7 +154,10 @@ var LessonView = Marionette.ItemView.extend({
     this.model.get('sameGroup').each(function(lesson) {
       this.options.timetable.add(lesson);
     }, this);
+
+    console.log("drop!!!!!!!!!!!!!");
     this.options.timetable.trigger('change');
+    console.log(this.options);
   },
 
   revert: function(droppable) {
