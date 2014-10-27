@@ -11,6 +11,8 @@ var config = require('../../common/config');
 var preferencesNamespace = config.namespaces.preferences + ':';
 var ivleNamespace = config.namespaces.ivle + ':';
 
+require('../../sdk');
+
 module.exports = Marionette.LayoutView.extend({
   template: template,
   ui: {
@@ -41,7 +43,10 @@ module.exports = Marionette.LayoutView.extend({
     'click .random-theme': 'randomTheme',
     'change @ui.faculty, @ui.student, @ui.mode, @ui.theme': 'updatePreference',
     'keydown': 'toggleTheme',
-    'click .connect-ivle': 'connectIvle'
+    'click .connect-ivle': 'connectIvle',
+    'click .login-button': function () {
+      login();
+    }
   },
   connectIvle: function () {
     var that = this;
