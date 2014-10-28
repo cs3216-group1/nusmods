@@ -18,17 +18,23 @@ module.exports = Marionette.Controller.extend({
       exams: this.exams,
       timetable: this.timetable
     });
-    this.eventCollection = new EventCollection();
+    this.events = new EventCollection();
 
     this.listenTo(this.selectedModules, 'add remove', this.modulesChanged);
     this.listenTo(this.timetable, 'change', this.modulesChanged);
-    this.listenTo(this.eventCollection, 'add remove', this.modulesChanged);
+    this.listenTo(this.events, 'add remove', this.eventsChanged);
   },
 
   modulesChanged: function () {
     if (!this.selectedModules.shared) {
       localforage.setItem(config.semTimetableFragment(this.semester) +
         ':queryString', this.selectedModules.toQueryString());
+    }
+  },
+
+  eventsChanged: function() {
+    if (!this.selectedModules.shared) {
+      localforage.setItem(config.semTimetableFragment(this.semester) + ":events",this.events.toQueryString());
     }
   }
 });
