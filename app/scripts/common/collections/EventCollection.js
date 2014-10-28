@@ -9,31 +9,35 @@ module.exports = Backbone.Collection.extend({
   model: Event,
 
   initialize: function () {
-    this.on('add',this.onAdd, this);
-    this.on('remove',this.onRemove,this);
+    this.on('add', this.onAdd, this);
+    this.on('remove', this.onRemove, this);
   },
 
-  onAdd: function(event){
-  	
-  },
-
-  onRemove: function(){
+  onAdd: function(event) {
 
   },
 
-  toQueryString: function(){
-  	var qsArray = [];
+  onRemove: function() {
+
+  },
+
+  toQueryString: function() {
+    var qsArray = [];
     this.each(function (event) {
-      var eventObject = {title:event.get('Title'),
-      					 start: event.get('Start'), 
-      					 end: event.get('End'), 
-      					 sem: event.get('Semester')};
+      var eventObject = {
+        title: event.get('Title'),
+        start: event.get('Start'), 
+        end: event.get('End'), 
+        sem: event.get('Semester')
+      };
       qsArray.push(eventObject);
     }, this);
-    return qs.stringify({events: qsArray});
+    return qs.stringify({
+      events: qsArray
+    });
   },
-},{
-	fromQueryStringToJSON: function (queryString) {
-	  	return qs.parse(queryString).events;
-	}
+}, {
+  fromQueryStringToJSON: function (queryString) {
+    return qs.parse(queryString).events;
+  }
 });
