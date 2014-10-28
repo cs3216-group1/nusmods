@@ -14,7 +14,7 @@ module.exports = Backbone.Collection.extend({
   },
 
   onAdd: function(event){
-  	
+    
   },
 
   onRemove: function(){
@@ -22,18 +22,18 @@ module.exports = Backbone.Collection.extend({
   },
 
   toQueryString: function(){
-  	var qsArray = [];
+    var qsArray = [];
     this.each(function (event) {
       var eventObject = {title:event.get('Title'),
-      					 start: event.get('Start'), 
-      					 end: event.get('End'), 
-      					 sem: event.get('Semester')};
+                 start: event.get('Start'), 
+                 end: event.get('End'), 
+                 sem: event.get('Semester')};
       qsArray.push(eventObject);
     }, this);
     return qs.stringify({events: qsArray});
   },
 },{
-	fromQueryStringToJSON: function (queryString) {
-	  	return qs.parse(queryString).events;
-	}
+  fromQueryStringToJSON: function (queryString) {
+      return qs.parse(queryString).events;
+  }
 });
