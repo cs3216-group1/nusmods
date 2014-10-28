@@ -35,10 +35,6 @@ var LessonView = Marionette.ItemView.extend({
 
   onRender: function() {
     console.log("onRender");
-    // console.log($(this.el);
-    //   $(this.el).dblclick(function(){
-    //     console.log("haha");
-    //   });
     $(this.el).dblclick(function(){
       console.log("DBCLICK!!!!!!!!!!!!!!!!");
       $(this).fadeTo("slow", 0.2);

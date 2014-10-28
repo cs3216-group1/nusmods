@@ -7,6 +7,8 @@ var TimetableModuleCollection = require('../collections/TimetableModuleCollectio
 var localforage = require('localforage');
 var config = require('../config');
 
+var EventCollection = require('../collections/EventCollection');
+
 module.exports = Marionette.Controller.extend({
   initialize: function (options) {
     this.semester = options.semester;
@@ -16,8 +18,11 @@ module.exports = Marionette.Controller.extend({
       exams: this.exams,
       timetable: this.timetable
     });
+    this.eventCollection = new EventCollection();
+
     this.listenTo(this.selectedModules, 'add remove', this.modulesChanged);
     this.listenTo(this.timetable, 'change', this.modulesChanged);
+    this.listenTo(this.eventCollection, 'add remove', this.modulesChanged);
   },
 
   modulesChanged: function () {
