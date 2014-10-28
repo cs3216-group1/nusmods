@@ -34,7 +34,7 @@ var LessonView = Marionette.ItemView.extend({
   },
 
   onRender: function() {
-    console.log("watch here: on render");
+    console.log("onRender");
     // console.log($(this.el);
     //   $(this.el).dblclick(function(){
     //     console.log("haha");
@@ -91,6 +91,8 @@ var LessonView = Marionette.ItemView.extend({
   },
 
   attach: function() {
+    console.log("attach");
+
     if (this.model.get('DayText') === 'Saturday') {
       this.options.parentView.$('#sat').show();
     }
@@ -123,6 +125,7 @@ var LessonView = Marionette.ItemView.extend({
   },
 
   out: function() {
+    console.log("out");
     this.$el.qtip('hide');
     var group = this.model.get('ClassNo');
     _.each(this.options.droppables, function(lessonView) {
@@ -133,6 +136,7 @@ var LessonView = Marionette.ItemView.extend({
   },
 
   over: function() {
+    console.log("show");
     this.$el.qtip('show');
     var group = this.model.get('ClassNo');
     _.each(this.options.droppables, function(lessonView) {
@@ -143,6 +147,7 @@ var LessonView = Marionette.ItemView.extend({
   },
 
   drop: function() {
+    console.log("drop");
     this.$el.qtip('hide');
     _.each(this.options.droppables, function(lessonView) {
       lessonView.remove();
@@ -161,6 +166,7 @@ var LessonView = Marionette.ItemView.extend({
   },
 
   revert: function(droppable) {
+    console.log("revert");
     $('body').css('cursor', 'auto');
     if (droppable) {
       return false;
@@ -173,6 +179,7 @@ var LessonView = Marionette.ItemView.extend({
   },
 
   start: function() {
+    console.log("start");
     var group = this.model.get('ClassNo');
     this.options.droppables = [];
     this.model.get('sameType').each(function(lesson) {
@@ -188,6 +195,7 @@ var LessonView = Marionette.ItemView.extend({
   },
 
   remove: function(detach) {
+    console.log("remove");
     var tr = this.$el.parent()
       .removeAttr('colspan')
       .after(this.detached)

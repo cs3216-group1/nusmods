@@ -39,6 +39,10 @@ module.exports = ModuleCollection.extend({
       mod.Timetable = modTimetable[1];
       module.set(mod);
       this.exams.addModule(module);
+      console.log("print this.timetable");
+      console.log(this.timetable);
+      console.log("print the module");
+      console.log(module.get('ModuleTitle'));
       var selectedLessonsByType = _.groupBy(options.selectedLessons, 'LessonType');
       var lessons = new LessonCollection();
       module.set('lessons', lessons);
