@@ -82,6 +82,12 @@ var LessonView = Marionette.ItemView.extend({
   },
 
   attach: function() {
+    this.$el.dblclick(this.skip);
+    var value = this.model.pick('ModuleCode', 'LessonType', 'ClassNo', 'DayText', 'StartTime');
+    if (!_.isEmpty(_.where(this.options.skippedLessons, value))) {
+      this.$el.fadeTo("slow", 0.2);
+      this.$el.toggleClass("lesson-hidden");
+    }
     if (this.model.get('DayText') === 'Saturday') {
       this.options.parentView.$('#sat').show();
     }
@@ -110,12 +116,6 @@ var LessonView = Marionette.ItemView.extend({
           }
         }
       }
-    }
-    this.$el.dblclick(this.skip);
-    var value = this.model.pick('ModuleCode', 'LessonType', 'ClassNo', 'DayText', 'StartTime');
-    if (!_.isEmpty(_.where(this.options.skippedLessons, value))) {
-      this.$el.fadeTo("slow", 0.2);
-      this.$el.toggleClass("lesson-hidden");
     }
   },
 
