@@ -13,7 +13,8 @@ module.exports = Marionette.CompositeView.extend({
   childViewOptions: function () {
     return {
       parentView: this,
-      timetable: this.collection
+      timetable: this.collection,
+      skippedLessons: this.options.skippedLessons
     };
   },
   template: template,

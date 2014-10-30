@@ -29,6 +29,6 @@
     "preferences": "preferences",
     "moduleFinder": "module:finder",
     "bookmarkedModules": "module:bookmarks:bookmarkedModules",
-    "user": "user"
-  }
+    "user": "user",
+  },
 }

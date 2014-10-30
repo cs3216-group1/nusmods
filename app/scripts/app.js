@@ -79,7 +79,7 @@ App.reqres.setHandler('displayLessons', function (sem, id, display) {
   });
 });
 
-App.reqres.setHandler('addEvent',function(sem,title,start,end){
+App.reqres.setHandler('addEvent', function(sem, title, start, end) {
   return selectedModulesControllers[sem - 1].events.add({
     Title: title,
     Start: start,
@@ -142,7 +142,6 @@ App.on('start', function () {
     var semTimetableFragment = config.semTimetableFragment(semester);
     return localforage.getItem(semTimetableFragment + ':queryString')
       .then(function (savedQueryString) {
-
       if ('/' + semTimetableFragment === window.location.pathname) {
         var queryString = window.location.search.slice(1);
         if (queryString) {
@@ -158,7 +157,6 @@ App.on('start', function () {
       }
       var selectedModules = TimetableModuleCollection.fromQueryStringToJSON(savedQueryString);
 
-
       return Promise.all(_.map(selectedModules, function (module) {
         return App.request('addModule', semester, module.ModuleCode, module);
       }));
@@ -171,22 +169,20 @@ App.on('start', function () {
 
 
   Promise.all(_.map(_.range(1, 5), function(semester) {
-    return localforage.getItem(config.semTimetableFragment(semester)+ ':events')
+    var semTimetableFragment = config.semTimetableFragment(semester);
+    return localforage.getItem(semTimetableFragment + ':events')
       .then(function (savedQueryString) {
-
       var addedEvents = EventCollection.fromQueryStringToJSON(savedQueryString);
-
       // for testing purpose
       // var addedEvents = [{title: "Event Title 1",
       //                     start: "hey, start time, remember to modify it",
       //                     end: "end time",
       //                     }];
-      return Promise.all(_.map(addedEvents, function(event){
-        return App.request('addEvent',semester,event.title,event.start,event.end);
+      return Promise.all(_.map(addedEvents, function(event) {
+        return App.request('addEvent', semester, event.title, event.start, event.end);
       }));
     });
   }));
-
 
   localforage.getItem(bookmarkedModulesNamespace, function (modules) {
     if (!modules) {

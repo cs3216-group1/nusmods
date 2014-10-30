@@ -29,15 +29,11 @@ var LessonView = Marionette.ItemView.extend({
   initialize: function(options) {
     this.options = options;
 
-    _.bindAll(this, 'drop', 'out', 'over', 'revert', 'start');
+    _.bindAll(this, 'drop', 'out', 'over', 'revert', 'start', 'skip');
     this.$el.data('lessonView', this);
   },
 
   onRender: function() {
-    $(this.el).dblclick(function(){
-      console.log("DBCLICK!!!!!!!!!!!!!!!!");
-      $(this).fadeTo("slow", 0.2);
-    });
     this.$el.addClass('color' + this.model.get('color'));
     if (this.model.get('isDraggable')) {
       this.$el.addClass('ui-draggable');
@@ -86,7 +82,6 @@ var LessonView = Marionette.ItemView.extend({
   },
 
   attach: function() {
-
     if (this.model.get('DayText') === 'Saturday') {
       this.options.parentView.$('#sat').show();
     }
@@ -115,6 +110,12 @@ var LessonView = Marionette.ItemView.extend({
           }
         }
       }
+    }
+    this.$el.dblclick(this.skip);
+    var value = this.model.pick('ModuleCode', 'LessonType', 'ClassNo', 'DayText', 'StartTime');
+    if (!_.isEmpty(_.where(this.options.skippedLessons, value))) {
+      this.$el.fadeTo("slow", 0.2);
+      this.$el.toggleClass("lesson-hidden");
     }
   },
 
@@ -150,9 +151,7 @@ var LessonView = Marionette.ItemView.extend({
     this.model.get('sameGroup').each(function(lesson) {
       this.options.timetable.add(lesson);
     }, this);
-
     this.options.timetable.trigger('change');
-    console.log(this.options);
   },
 
   revert: function(droppable) {
@@ -182,6 +181,34 @@ var LessonView = Marionette.ItemView.extend({
     }, this);
   },
 
+  skip: function() {
+    var value = this.model.pick('ModuleCode', 'LessonType', 'ClassNo', 'DayText', 'StartTime');
+    if (this.$el.hasClass("lesson-hidden")) {
+      this.$el.fadeTo("slow", 1);
+      var filter = _.matches(value);
+
+      for (var key in this.options.skippedLessons) {
+        if (this.options.skippedLessons.hasOwnProperty(key) && filter(this.options.skippedLessons[key])) {
+          delete this.options.skippedLessons[key];
+        }
+      }
+
+    } else {
+      this.$el.fadeTo("slow", 0.2);
+      
+      var newKey = 0;
+      _.each(this.options.skippedLessons, function (value, key, list) {
+        newKey = Math.max(newKey, key);
+      }, this);
+      ++newKey;
+
+      this.options.skippedLessons[newKey] = value;
+
+    }
+    this.$el.toggleClass("lesson-hidden");
+    this.options.timetable.trigger("skip");
+  },
+
   remove: function(detach) {
     var tr = this.$el.parent()
       .removeAttr('colspan')
@@ -200,6 +227,7 @@ var LessonView = Marionette.ItemView.extend({
     }
     return this;
   }
+
 });
 
 module.exports = LessonView;
