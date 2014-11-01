@@ -39,6 +39,7 @@ module.exports = Marionette.LayoutView.extend({
   onShow: function() {
     this.selectedModules = App.request('selectedModules', this.semester);
     this.timetable = this.selectedModules.timetable;
+    this.skippedLessons = this.selectedModules.skippedLessons;
 
     this.listenTo(this.selectedModules, 'add remove', this.modulesChanged);
     this.listenTo(this.timetable, 'change', this.modulesChanged);
@@ -62,7 +63,7 @@ module.exports = Marionette.LayoutView.extend({
       semester: this.semester
     }));
     this.showHideRegion.show(new ShowHideView());
-    this.timetableRegion.show(new TimetableView({collection: this.timetable}));
+    this.timetableRegion.show(new TimetableView({collection: this.timetable, skippedLessons: this.skippedLessons}));
 
     var tipsModel = new Backbone.Model({tips: tips});
     this.tipsRegion.show(new TipsView({model: tipsModel}));

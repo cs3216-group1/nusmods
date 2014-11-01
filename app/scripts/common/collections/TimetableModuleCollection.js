@@ -14,6 +14,7 @@ module.exports = ModuleCollection.extend({
     this.colors = [];
     this.exams = options.exams;
     this.timetable = options.timetable;
+    this.skippedLessons = options.skippedLessons;
 
     this.on('add', this.onAdd, this);
     this.on('remove', this.onRemove, this);
@@ -54,6 +55,7 @@ module.exports = ModuleCollection.extend({
               color: color,
               display: true,
               hidden: true,
+              skipped: false,
               isDraggable: isDraggable,
               ModuleCode: module.id,
               ModuleTitle: module.get('ModuleTitle'),
