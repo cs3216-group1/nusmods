@@ -12,6 +12,7 @@ var EventCollection = require('./common/collections/EventCollection');
 var _ = require('underscore');
 var config = require('./common/config');
 var localforage = require('localforage');
+var $ = require('jquery');
 require('qTip2');
 
 // Set Backbone.History.initialRoute to allow route handlers to find out if they
@@ -32,7 +33,7 @@ var App = new Marionette.Application();
 
 App.addRegions({
   mainRegion: '.content',
-  navigationRegion: 'nav',
+  navigationRegion: '#nav',
   selectRegion: '.navbar-form',
   bookmarksRegion: '.nm-bookmarks'
 });
@@ -128,9 +129,11 @@ App.on('start', function () {
   });
 
   // header modules
-  require('./modules');
   require('./timetable');
+  require('./modules');
   // require('ivle');
+  require('./friends');
+  require('./venues');
   require('./preferences');
 
   // footer modules

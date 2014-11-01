@@ -12,6 +12,7 @@ var EventCollection = require('../collections/EventCollection');
 module.exports = Marionette.Controller.extend({
   initialize: function (options) {
     this.semester = options.semester;
+    this.saveOnChange = typeof options.saveOnChange !== 'undefined' ? options.saveOnChange : true;
     this.exams = new ExamCollection();
     this.timetable = new LessonCollection();
     this.selectedModules = new TimetableModuleCollection([], {
@@ -23,6 +24,10 @@ module.exports = Marionette.Controller.extend({
     this.listenTo(this.selectedModules, 'add remove', this.modulesChanged);
     this.listenTo(this.timetable, 'change', this.modulesChanged);
     this.listenTo(this.events, 'add remove', this.eventsChanged);
+    if (this.saveOnChange) {
+      this.listenTo(this.selectedModules, 'add remove', this.modulesChanged);
+      this.listenTo(this.timetable, 'change', this.modulesChanged);
+    }
   },
 
   modulesChanged: function () {
