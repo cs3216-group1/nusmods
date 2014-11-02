@@ -5,7 +5,7 @@ var Marionette = require('backbone.marionette');
 
 var navigationItem = App.request('addNavigationItem', {
   name: 'Chatroom',
-  icon: 'user',
+  icon: 'fa fa-comments',
   url: '/chatroom'
 });
 
