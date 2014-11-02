@@ -60,6 +60,7 @@ App.reqres.setHandler('selectedModules', function (sem) {
   return selectedModulesControllers[sem - 1].selectedModules;
 });
 App.reqres.setHandler('addModule', function (sem, id, options) {
+console.log("here is add module");
   return selectedModulesControllers[sem - 1].selectedModules.add({
     ModuleCode: id,
     Semester: sem
@@ -134,6 +135,7 @@ App.on('start', function () {
   // require('ivle');
   require('./friends');
   require('./venues');
+  require('./chatroom');
   require('./preferences');
 
   // footer modules
