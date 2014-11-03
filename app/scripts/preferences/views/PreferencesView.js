@@ -11,7 +11,7 @@ var config = require('../../common/config');
 var preferencesNamespace = config.namespaces.preferences + ':';
 var ivleNamespace = config.namespaces.ivle + ':';
 
-require('../../sdk');
+require('../../nuscloud');
 
 module.exports = Marionette.LayoutView.extend({
   template: template,
