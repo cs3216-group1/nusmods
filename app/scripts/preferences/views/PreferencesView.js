@@ -45,7 +45,7 @@ module.exports = Marionette.LayoutView.extend({
     'keydown': 'toggleTheme',
     'click .connect-ivle': 'connectIvle',
     'click .login-button': function () {
-      login();
+      sdk.login();
     }
   },
   connectIvle: function () {
