@@ -44,9 +44,8 @@ module.exports = Marionette.LayoutView.extend({
     'change @ui.faculty, @ui.student, @ui.mode, @ui.theme': 'updatePreference',
     'keydown': 'toggleTheme',
     'click .connect-ivle': 'connectIvle',
-    'click .login-button': function () {
-      sdk.login();
-    }
+    'click .login-button': 'cloudLogin',
+    'click .logout-button': 'cloudLogout'
   },
   connectIvle: function () {
     var that = this;
@@ -128,5 +127,13 @@ module.exports = Marionette.LayoutView.extend({
     } else if (property === 'mode') {
       themePicker.toggleMode();
     }
+  },
+  cloudLogin: function () {
+    sdk.login(function () {
+    });
+  },
+  cloudLogout: function () {
+    sdk.logout(function () {
+    });
   }
 });

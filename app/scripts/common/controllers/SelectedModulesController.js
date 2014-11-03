@@ -40,18 +40,32 @@ module.exports = Marionette.Controller.extend({
 
   modulesChanged: function () {
     if (!this.selectedModules.shared) {
-      localforage.setItem(config.semTimetableFragment(this.semester) +
-        ':queryString', this.selectedModules.toQueryString());
+      var url = config.semTimetableFragment(this.semester) + ':queryString';
+      var url2 = 'timetable/sem' + this.semester;
+      localforage.setItem(url, this.selectedModules.toQueryString()).then(function (value) {
+        sdk.post('me/app/' + url2, {'data': value}, function (response) {
+          //
+        });
+      });
     }
   },
 
   skippedChanged: function () {
-    localforage.setItem(config.semTimetableFragment(this.semester) + ":skippedLessons", qs.stringify(this.skippedLessons));
+    if (!this.selectedModules.shared) {
+      var url = config.semTimetableFragment(this.semester) + ":skippedLessons";
+      var url2 = 'skipped/sem' + this.semester;
+      localforage.setItem(url, qs.stringify(this.skippedLessons)).then(function (value) {
+        sdk.post('me/app/' + url2, {'data': value}, function (response) {
+          //
+        });
+      });
+    }
   },
 
   eventsChanged: function () {
     if (!this.selectedModules.shared) {
-      localforage.setItem(config.semTimetableFragment(this.semester) + ":events", this.events.toQueryString());
+      var url = config.semTimetableFragment(this.semester) + ":events";
+      localforage.setItem(url, this.events.toQueryString());
     }
   },
 
