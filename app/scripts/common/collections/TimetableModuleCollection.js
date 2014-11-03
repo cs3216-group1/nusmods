@@ -15,6 +15,7 @@ module.exports = ModuleCollection.extend({
     this.exams = options.exams;
     this.timetable = options.timetable;
     this.skippedLessons = options.skippedLessons;
+    this.getSkippedLessons = options.getSkippedLessons;
 
     this.on('add', this.onAdd, this);
     this.on('remove', this.onRemove, this);
@@ -33,7 +34,8 @@ module.exports = ModuleCollection.extend({
 
     return Promise.all([
       NUSMods.getModIndex(module.id),
-      NUSMods.getTimetable(module.get('Semester'), module.id)
+      NUSMods.getTimetable(module.get('Semester'), module.id),
+      this.getSkippedLessons()
     ]).then(_.bind(function (modTimetable) {
       var mod = modTimetable[0];
       mod = _.extend(mod, _.findWhere(mod.History, {Semester: module.get('Semester')}));
@@ -51,11 +53,12 @@ module.exports = ModuleCollection.extend({
         _.each(_.groupBy(groups, 'ClassNo'), function (lessonsData) {
           var sameGroup = new LessonCollection();
           _.each(lessonsData, function (lessonData) {
+            var skipped = !_.isEmpty(_.where(this.skippedLessons, _.pick(lessonData, 'ModuleCode', 'LessonType', 'ClassNo', 'DayText', 'StartTime')));
             var lesson = new LessonModel(_.extend({
               color: color,
               display: true,
               hidden: true,
-              skipped: false,
+              skipped: skipped,
               isDraggable: isDraggable,
               ModuleCode: module.id,
               ModuleTitle: module.get('ModuleTitle'),

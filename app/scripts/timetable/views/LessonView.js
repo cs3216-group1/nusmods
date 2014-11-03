@@ -83,10 +83,8 @@ var LessonView = Marionette.ItemView.extend({
 
   attach: function() {
     this.$el.dblclick(this.skip);
-    var value = this.model.pick('ModuleCode', 'LessonType', 'ClassNo', 'DayText', 'StartTime');
-    if (!_.isEmpty(_.where(this.options.skippedLessons, value))) {
-      this.$el.fadeTo("slow", 0.2);
-      this.$el.toggleClass("lesson-hidden");
+    if (this.model.get('skipped')) {
+      this.$el.fadeTo('slow', 0.2);
     }
     if (this.model.get('DayText') === 'Saturday') {
       this.options.parentView.$('#sat').show();
@@ -167,6 +165,9 @@ var LessonView = Marionette.ItemView.extend({
   },
 
   start: function() {
+    if (this.model.get('skipped')) {
+      this.skip();
+    }
     var group = this.model.get('ClassNo');
     this.options.droppables = [];
     this.model.get('sameType').each(function(lesson) {
@@ -183,33 +184,33 @@ var LessonView = Marionette.ItemView.extend({
 
   skip: function() {
     var value = this.model.pick('ModuleCode', 'LessonType', 'ClassNo', 'DayText', 'StartTime');
-    if (this.$el.hasClass("lesson-hidden")) {
-      this.$el.fadeTo("slow", 1);
+    if (this.model.get('skipped')) {
+      console.log('turn false');
+      this.$el.fadeTo('slow', 1);
       var filter = _.matches(value);
-
       for (var key in this.options.skippedLessons) {
         if (this.options.skippedLessons.hasOwnProperty(key) && filter(this.options.skippedLessons[key])) {
           delete this.options.skippedLessons[key];
         }
       }
-
     } else {
-      this.$el.fadeTo("slow", 0.2);
-      
+      console.log('turn true');
+      this.$el.fadeTo('slow', 0.2);
       var newKey = 0;
       _.each(this.options.skippedLessons, function (value, key, list) {
         newKey = Math.max(newKey, key);
       }, this);
       ++newKey;
-
       this.options.skippedLessons[newKey] = value;
-
     }
-    this.$el.toggleClass("lesson-hidden");
-    this.options.timetable.trigger("skip");
+    this.model.set('skipped', !this.model.get('skipped'));
+    this.options.timetable.trigger('skip');
   },
 
   remove: function(detach) {
+    if (this.model.get('skipped')) {
+      this.skip();
+    }
     var tr = this.$el.parent()
       .removeAttr('colspan')
       .after(this.detached)

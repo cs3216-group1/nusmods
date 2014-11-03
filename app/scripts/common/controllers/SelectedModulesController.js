@@ -19,11 +19,11 @@ module.exports = Marionette.Controller.extend({
     this.exams = new ExamCollection();
     this.timetable = new LessonCollection();
     this.skippedLessons = {};
-    this.getSkippedLessons();
     this.selectedModules = new TimetableModuleCollection([], {
       exams: this.exams,
       timetable: this.timetable,
-      skippedLessons: this.skippedLessons
+      skippedLessons: this.skippedLessons,
+      getSkippedLessons: this.getSkippedLessons
     });
 
     this.events = new EventCollection();
@@ -59,16 +59,17 @@ module.exports = Marionette.Controller.extend({
     var thisSemester = this.semester;
     var skippedLessons = this.skippedLessons;
     // localforage.removeItem(config.semTimetableFragment(thisSemester) + ":skippedLessons");return;
-    localforage.getItem(config.semTimetableFragment(thisSemester) + ":skippedLessons", function (str) {
+    return localforage.getItem(config.semTimetableFragment(thisSemester) + ":skippedLessons").then(function (str) {
       if (str) {
         var collection = qs.parse(str);
         _.each(collection, function (lesson) {
         }, this);
         _.extend(skippedLessons, collection);
+        return;
       } else {
         return;
       }
-    });
+    })
   }
 
 });
