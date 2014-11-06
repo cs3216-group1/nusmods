@@ -62,7 +62,9 @@ module.exports = Marionette.LayoutView.extend({
       window.ivleLoginSuccessful = function (token) {
         $('#ivle-status-success').addClass('hidden');
         $('#ivle-status-loading').removeClass('hidden');
-        localforage.setItem(ivleNamespace + 'ivleToken', token);
+        sdk.post('me/app/' + ivleNamespace + 'ivleToken', { 'data': token }, function (response) {
+          localforage.setItem(ivleNamespace + 'ivleToken', token);
+        });
         that.fetchModuleHistory(token);
         window.ivleLoginSuccessful = undefined;
       };
@@ -99,7 +101,9 @@ module.exports = Marionette.LayoutView.extend({
     );
   },
   saveModuleHistory: function (moduleHistory) {
-    localforage.setItem(ivleNamespace + 'ivleModuleHistory', moduleHistory.Results);
+    sdk.post('me/app/' + ivleNamespace + 'ivleModuleHistory', { 'data': moduleHistory.Results }, function (response) {
+      localforage.setItem(ivleNamespace + 'ivleModuleHistory', moduleHistory.Results);
+    });
     $('#ivle-status-success').removeClass('hidden');
     $('#ivle-status-loading').addClass('hidden');
   },
@@ -121,7 +125,9 @@ module.exports = Marionette.LayoutView.extend({
       });
       return;
     }
-    localforage.setItem(preferencesNamespace + property, value);
+    sdk.post('me/app/' + preferencesNamespace + property, { 'data': value }, function (response) {
+      localforage.setItem(preferencesNamespace + property, value);
+    });
     if (property === 'theme') {
       themePicker.applyTheme(value);
     } else if (property === 'mode') {
@@ -130,10 +136,16 @@ module.exports = Marionette.LayoutView.extend({
   },
   cloudLogin: function () {
     sdk.login(function () {
+      // sdk.get('me/app/timetable', function (response) {
+      //   console.log(response);
+      // });
     });
   },
   cloudLogout: function () {
+    // console.log('logging out');
     sdk.logout(function () {
+      // console.log('logged out');
+      // localforage.clear();
     });
   }
 });

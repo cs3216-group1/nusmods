@@ -24,7 +24,9 @@ Promise.all(_.keys(config.defaultPreferences).map(function (property) {
     if (!value) {
       value = config.defaultPreferences[property];
     }
-    localforage.setItem(preferencesNamespace + property, value);
+    sdk.post('me/app/' + preferencesNamespace + property, { 'data': value }, function (response) {
+      localforage.setItem(preferencesNamespace + property, value);
+    });
   });
 }));
 

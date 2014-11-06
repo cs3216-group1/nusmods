@@ -57,7 +57,9 @@ module.exports = {
     return newMode;
   },
   updateAppearance: function (property, value) {
-    localforage.setItem(preferencesNamespace + property, value);
+    sdk.post('me/app/' + preferencesNamespace + property, { 'data': value }, function (response) {
+      localforage.setItem(preferencesNamespace + property, value);
+    });
     
     var $body = $('body');
     $body.attr('data-' + property, value);

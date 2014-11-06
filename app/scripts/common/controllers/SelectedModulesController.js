@@ -40,40 +40,36 @@ module.exports = Marionette.Controller.extend({
 
   modulesChanged: function () {
     if (!this.selectedModules.shared) {
+      var selectedModules = this.selectedModules.toQueryString();
       var url = config.semTimetableFragment(this.semester) + ':queryString';
-      var url2 = 'timetable/sem' + this.semester;
-      localforage.setItem(url, this.selectedModules.toQueryString()).then(function (value) {
-        sdk.post('me/app/' + url2, {'data': value}, function (response) {
-          //
-        });
+      sdk.post('me/app/' + url, { 'data': selectedModules }, function (response) {
+        localforage.setItem(url, selectedModules);
       });
     }
   },
 
   skippedChanged: function () {
     if (!this.selectedModules.shared) {
-      var url = config.semTimetableFragment(this.semester) + ":skippedLessons";
-      var url2 = 'skipped/sem' + this.semester;
-      localforage.setItem(url, qs.stringify(this.skippedLessons)).then(function (value) {
-        sdk.post('me/app/' + url2, {'data': value}, function (response) {
-          //
-        });
+      var url = config.semTimetableFragment(this.semester) + ':skippedLessons';
+      sdk.post('me/app/' + url, { 'data': qs.stringify(this.skippedLessons) }, function (response) {
+        localforage.setItem(url, qs.stringify(this.skippedLessons));
       });
     }
   },
 
   eventsChanged: function () {
     if (!this.selectedModules.shared) {
-      var url = config.semTimetableFragment(this.semester) + ":events";
-      localforage.setItem(url, this.events.toQueryString());
+      var url = config.semTimetableFragment(this.semester) + ':events';
+      sdk.post('me/app/' + url, { 'data': this.events.toQueryString() }, function (response) {
+        localforage.setItem(url, this.events.toQueryString());
+      });
     }
   },
 
   getSkippedLessons: function () {
     var thisSemester = this.semester;
     var skippedLessons = this.skippedLessons;
-    // localforage.removeItem(config.semTimetableFragment(thisSemester) + ":skippedLessons");return;
-    return localforage.getItem(config.semTimetableFragment(thisSemester) + ":skippedLessons").then(function (str) {
+    return localforage.getItem(config.semTimetableFragment(thisSemester) + ':skippedLessons').then(function (str) {
       if (str) {
         var collection = qs.parse(str);
         _.each(collection, function (lesson) {

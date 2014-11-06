@@ -112,7 +112,9 @@ module.exports = Marionette.LayoutView.extend({
     friendsData = _.map(friendsData, function (person) {
       return _.omit(person, 'moduleInformation');
     });
-    localforage.setItem('timetable:friends', friendsData);
+    sdk.post('me/app/timetable:friends', { 'data': friendsData }, function (response) {
+      localforage.setItem('timetable:friends', friendsData);
+    });
   },
   updateDisplayedTimetable: function () {
 

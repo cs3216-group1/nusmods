@@ -41,7 +41,9 @@ module.exports = Marionette.CollectionView.extend({
     });
 
     $('.collapse').on('shown.bs.collapse hidden.bs.collapse', function () {
-      localforage.setItem(moduleFinderNamespace + 'facets', _.pluck($('.collapse.in'), 'id'));
+      sdk.post('me/app/' + moduleFinderNamespace + 'facets', { 'data': _.pluck($('.collapse.in'), 'id') }, function (response) {
+        localforage.setItem(moduleFinderNamespace + 'facets', _.pluck($('.collapse.in'), 'id'));
+      });
     });
   },
   events: {
@@ -56,7 +58,9 @@ module.exports = Marionette.CollectionView.extend({
           selectedFilters[facet.get('label')] = filters;
         }
       });
-      localforage.setItem(moduleFinderNamespace + 'filters', selectedFilters);
+      sdk.post('me/app/' + moduleFinderNamespace + 'filters', { 'data': selectedFilters }, function (response) {
+        localforage.setItem(moduleFinderNamespace + 'filters', selectedFilters);
+      });
     }
   },
 

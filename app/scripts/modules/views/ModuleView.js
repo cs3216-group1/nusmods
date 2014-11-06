@@ -200,7 +200,9 @@ module.exports = Marionette.LayoutView.extend({
       localforage.getItem(preferencesNamespace + item, function (value) {
         if (!value) {
           value = defaults[item];
-          localforage.setItem(preferencesNamespace + item, value);
+          sdk.post('me/app/' + preferencesNamespace + item, { 'data': value }, function (response) {
+            localforage.setItem(preferencesNamespace + item, value);
+          });
         }
         $(selector).val([value]);
         searchPreferences[item] = value;
@@ -358,7 +360,9 @@ module.exports = Marionette.LayoutView.extend({
       });
       return false;
     }
-    localforage.setItem(property, value);
+    sdk.post('me/app/' + preferencesNamespace + property, { 'data': value }, function (response) {
+      localforage.setItem(preferencesNamespace + property, value);
+    });
     return true;
   }
 });
