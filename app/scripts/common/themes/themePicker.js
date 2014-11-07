@@ -5,6 +5,7 @@ var _ = require('underscore');
 var localforage = require('localforage');
 var themeOptions = require('./themeOptions.json');
 var config = require('../../common/config');
+var queryDB = require('../../common/utils/queryDB');
 var preferencesNamespace = config.namespaces.preferences + ':';
 
 module.exports = {
@@ -57,9 +58,7 @@ module.exports = {
     return newMode;
   },
   updateAppearance: function (property, value) {
-    sdk.post('me/app/' + preferencesNamespace + property, { 'data': value }, function (response) {
-      localforage.setItem(preferencesNamespace + property, value);
-    });
+    queryDB.setItem(preferencesNamespace + property, value);
     
     var $body = $('body');
     $body.attr('data-' + property, value);

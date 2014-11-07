@@ -185,7 +185,6 @@ var LessonView = Marionette.ItemView.extend({
   skip: function() {
     var value = this.model.pick('ModuleCode', 'LessonType', 'ClassNo', 'DayText', 'StartTime');
     if (this.model.get('skipped')) {
-      console.log('turn false');
       this.$el.fadeTo('slow', 1);
       var filter = _.matches(value);
       for (var key in this.options.skippedLessons) {
@@ -194,7 +193,6 @@ var LessonView = Marionette.ItemView.extend({
         }
       }
     } else {
-      console.log('turn true');
       this.$el.fadeTo('slow', 0.2);
       var newKey = 0;
       _.each(this.options.skippedLessons, function (value, key, list) {

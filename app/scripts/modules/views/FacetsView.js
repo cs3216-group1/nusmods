@@ -8,6 +8,7 @@ var _ = require('underscore');
 var localforage = require('localforage');
 
 var config = require('../../common/config');
+var queryDB = require('../../common/utils/queryDB');
 var moduleFinderNamespace = config.namespaces.moduleFinder + ':';
 
 module.exports = Marionette.CollectionView.extend({
@@ -41,9 +42,7 @@ module.exports = Marionette.CollectionView.extend({
     });
 
     $('.collapse').on('shown.bs.collapse hidden.bs.collapse', function () {
-      sdk.post('me/app/' + moduleFinderNamespace + 'facets', { 'data': _.pluck($('.collapse.in'), 'id') }, function (response) {
-        localforage.setItem(moduleFinderNamespace + 'facets', _.pluck($('.collapse.in'), 'id'));
-      });
+      queryDB.setItem(moduleFinderNamespace + 'facets', _.pluck($('.collapse.in'), 'id'));
     });
   },
   events: {
@@ -58,9 +57,7 @@ module.exports = Marionette.CollectionView.extend({
           selectedFilters[facet.get('label')] = filters;
         }
       });
-      sdk.post('me/app/' + moduleFinderNamespace + 'filters', { 'data': selectedFilters }, function (response) {
-        localforage.setItem(moduleFinderNamespace + 'filters', selectedFilters);
-      });
+      queryDB.setItem(moduleFinderNamespace + 'filters', selectedFilters);
     }
   },
 

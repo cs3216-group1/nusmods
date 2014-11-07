@@ -12,6 +12,7 @@ var EventCollection = require('./common/collections/EventCollection');
 var _ = require('underscore');
 var config = require('./common/config');
 var localforage = require('localforage');
+var queryDB = require('./common/utils/queryDB');
 var $ = require('jquery');
 require('qTip2');
 
@@ -109,9 +110,7 @@ App.reqres.setHandler('addBookmark', function (id) {
     if (!_.contains(modules, id)) {
       modules.push(id);
     }
-    sdk.post('me/app/' + bookmarkedModulesNamespace, { 'data': modules }, function (response) {
-      localforage.setItem(bookmarkedModulesNamespace, modules);
-    });
+    queryDB.setItem(bookmarkedModulesNamespace, modules);
   });
 });
 App.reqres.setHandler('deleteBookmark', function (id) {
@@ -119,9 +118,7 @@ App.reqres.setHandler('deleteBookmark', function (id) {
     var index = modules.indexOf(id);
     if (index > -1) {
       modules.splice(index, 1);
-      sdk.post('me/app/' + bookmarkedModulesNamespace, { 'data': modules }, function (response) {
-        localforage.setItem(bookmarkedModulesNamespace, modules);
-      });
+      queryDB.setItem(bookmarkedModulesNamespace, modules);
     }
   });
 });
@@ -199,9 +196,7 @@ App.on('start', function () {
 
   localforage.getItem(bookmarkedModulesNamespace, function (modules) {
     if (!modules) {
-      sdk.post('me/app/' + bookmarkedModulesNamespace, { 'data': [] }, function (response) {
-        localforage.setItem(bookmarkedModulesNamespace, []);
-      });
+      queryDB.setItem(bookmarkedModulesNamespace, []);
     }
   });
 });

@@ -13,6 +13,7 @@ var d3 = require('d3');
 var localforage = require('localforage');
 var template = require('../templates/module.hbs');
 var config = require('../../common/config');
+var queryDB = require('../../common/utils/queryDB');
 
 var preferencesNamespace = config.namespaces.preferences + ':';
 var searchPreferences = {};
@@ -200,9 +201,7 @@ module.exports = Marionette.LayoutView.extend({
       localforage.getItem(preferencesNamespace + item, function (value) {
         if (!value) {
           value = defaults[item];
-          sdk.post('me/app/' + preferencesNamespace + item, { 'data': value }, function (response) {
-            localforage.setItem(preferencesNamespace + item, value);
-          });
+          queryDB.setItem(preferencesNamespace + item, value);
         }
         $(selector).val([value]);
         searchPreferences[item] = value;
@@ -360,9 +359,7 @@ module.exports = Marionette.LayoutView.extend({
       });
       return false;
     }
-    sdk.post('me/app/' + preferencesNamespace + property, { 'data': value }, function (response) {
-      localforage.setItem(preferencesNamespace + property, value);
-    });
+    queryDB.setItem(preferencesNamespace + property, value);
     return true;
   }
 });

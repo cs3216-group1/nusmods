@@ -9,6 +9,7 @@ var config = require('../config');
 var qs = require('qs');
 var localforage = require('localforage');
 var _ = require('underscore');
+var queryDB = require('../utils/queryDB');
 
 var EventCollection = require('../collections/EventCollection');
 
@@ -42,27 +43,22 @@ module.exports = Marionette.Controller.extend({
     if (!this.selectedModules.shared) {
       var selectedModules = this.selectedModules.toQueryString();
       var url = config.semTimetableFragment(this.semester) + ':queryString';
-      sdk.post('me/app/' + url, { 'data': selectedModules }, function (response) {
-        localforage.setItem(url, selectedModules);
-      });
+      queryDB.setItem(url, selectedModules);
     }
   },
 
   skippedChanged: function () {
     if (!this.selectedModules.shared) {
+      var skippedLessons = this.skippedLessons;
       var url = config.semTimetableFragment(this.semester) + ':skippedLessons';
-      sdk.post('me/app/' + url, { 'data': qs.stringify(this.skippedLessons) }, function (response) {
-        localforage.setItem(url, qs.stringify(this.skippedLessons));
-      });
+      queryDB.setItem(url, skippedLessons);
     }
   },
 
   eventsChanged: function () {
     if (!this.selectedModules.shared) {
       var url = config.semTimetableFragment(this.semester) + ':events';
-      sdk.post('me/app/' + url, { 'data': this.events.toQueryString() }, function (response) {
-        localforage.setItem(url, this.events.toQueryString());
-      });
+      queryDB.setItem(url, this.events.toQueryString());
     }
   },
 

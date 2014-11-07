@@ -5,6 +5,7 @@ var $ = require('jquery');
 var App = require('../../app');
 var Marionette = require('backbone.marionette');
 var template = require('../templates/friends_list_item.hbs');
+var queryDB = require('../../common/utils/queryDB');
 
 module.exports = Marionette.LayoutView.extend({
   tagName: 'div',
@@ -37,9 +38,6 @@ module.exports = Marionette.LayoutView.extend({
     friendsListCollection.remove(this.model);
     friendsListCollection.trigger('change');
     var friendsListData = _.pick(_.pluck(friendsListCollection.models, 'attributes'), 'name', 'queryString', 'selected', 'semester');
-    sdk.post('me/app/timetable:friends', { 'data': friendsListData }, function (response) {
-      localforage.setItem('timetable:friends', friendsListData);
-    });
-    
+    queryDB.setItem('timetable:friends', friendsListData);
   }
 });

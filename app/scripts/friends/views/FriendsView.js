@@ -15,6 +15,7 @@ var FriendsListView = require('./FriendsListView');
 var FriendsSelectedListView = require('./FriendsSelectedListView');
 var FriendModel = require('../models/FriendModel');
 var config = require('../../common/config');
+var queryDB = require('../../common/utils/queryDB');
 
 require('bootstrap/tooltip');
 require('bootstrap/popover');
@@ -112,9 +113,7 @@ module.exports = Marionette.LayoutView.extend({
     friendsData = _.map(friendsData, function (person) {
       return _.omit(person, 'moduleInformation');
     });
-    sdk.post('me/app/timetable:friends', { 'data': friendsData }, function (response) {
-      localforage.setItem('timetable:friends', friendsData);
-    });
+    queryDB.setItem('timetable:friends', friendsData);
   },
   updateDisplayedTimetable: function () {
 
