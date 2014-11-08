@@ -11,6 +11,7 @@ var queryDB = require('../../common/utils/queryDB');
 
 var preferencesNamespace = config.namespaces.preferences + ':';
 var ivleNamespace = config.namespaces.ivle + ':';
+var bookmarkedModulesNamespace = config.namespaces.bookmarkedModules + ':';
 
 require('../../nuscloud');
 
@@ -131,19 +132,19 @@ module.exports = Marionette.LayoutView.extend({
   },
   cloudLogin: function () {
     sdk.login(function () {
-      queryDB.getItemFromDB('preferences:faculty', function (response) {
-        console.log(response);
-      })
-      queryDB.getItemFromDB('timetable/2014-2015/sem1:skippedLessons', function (response) {
-        console.log(response);
-      })
+      _.each(config.defaultPreferences, function (value, key, list) {
+        queryDB.getItemFromDB(preferencesNamespace + key);
+      }, this);
+      _.each(_.range(1, 5), function(semester) {
+        queryDB.getItemFromDB(config.semTimetableFragment(semester) + ':skippedLessons');
+        queryDB.getItemFromDB(config.semTimetableFragment(semester) + ':queryString');
+      }, this);
+      queryDB.getItemFromDB(bookmarkedModulesNamespace);
     });
   },
   cloudLogout: function () {
-    console.log('logging out');
     sdk.logout(function () {
-      console.log('logged out');
-      // localforage.clear();
+      localforage.clear();
     });
   }
 });

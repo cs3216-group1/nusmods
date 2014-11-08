@@ -206,8 +206,13 @@ var LessonView = Marionette.ItemView.extend({
   },
 
   remove: function(detach) {
-    if (this.model.get('skipped')) {
-      this.skip();
+    var skippedChanged = !_.every(this.options.skippedLessons, function (value, key, list) {
+      return (this.options.timetable.where(value).length != 0);
+    }, this);
+    if (skippedChanged) {
+      if (this.model.get('skipped')) {
+        this.skip();
+      }
     }
     var tr = this.$el.parent()
       .removeAttr('colspan')

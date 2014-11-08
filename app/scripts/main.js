@@ -16,11 +16,12 @@ var Promise = require('bluebird'); // jshint ignore:line
 var analytics = require('./analytics');
 var localforage = require('localforage');
 var queryDB = require('./common/utils/queryDB');
+var preferencesNamespace = config.namespaces.preferences + ':';
 
 var $body = $('body');
 
 Promise.all(_.keys(config.defaultPreferences).map(function (property) {
-  return localforage.getItem(property).then(function (value) {
+  return localforage.getItem(preferencesNamespace + property).then(function (value) {
     // Migration from old preferences to new namespaced preferencs.
     if (!value) {
       value = config.defaultPreferences[property];

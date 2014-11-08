@@ -15,12 +15,20 @@ module.exports = {
   },
   getItemFromDB: function (key, callback) {
     sdk.get('me/app/' + key, function (response) {
-      var value = JSON.parse(response).data;
-      // localforage.setItem(key, value)
-      if (callback) {
-        callback(value);
+      if (response === '') {
+        response = '{\"status\": \"absent\"}';
+      }
+      response = JSON.parse(response);
+      var value = response.data;
+      if (response.status === 'absent') {
         return;
       }
+      localforage.setItem(key, value, function (value) {
+        if (callback) {
+          callback();
+          return;
+        }
+      })
     });
   }
 };
