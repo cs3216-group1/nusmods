@@ -113,7 +113,7 @@ module.exports = Marionette.LayoutView.extend({
     friendsData = _.map(friendsData, function (person) {
       return _.omit(person, 'moduleInformation');
     });
-    queryDB.setItem('timetable:friends', friendsData);
+    queryDB.setItemToDB('timetable:friends', friendsData);
   },
   updateDisplayedTimetable: function () {
 

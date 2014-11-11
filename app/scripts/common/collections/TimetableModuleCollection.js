@@ -77,7 +77,7 @@ module.exports = ModuleCollection.extend({
       _.each(options.selectedLessons, function (lesson) {
         this.timetable.add(lessons.where(lesson));
       }, this);
-      this.timetable.trigger('change');
+      //this.timetable.trigger('change');
     }, this));
   },
 

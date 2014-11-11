@@ -38,6 +38,6 @@ module.exports = Marionette.LayoutView.extend({
     friendsListCollection.remove(this.model);
     friendsListCollection.trigger('change');
     var friendsListData = _.pick(_.pluck(friendsListCollection.models, 'attributes'), 'name', 'queryString', 'selected', 'semester');
-    queryDB.setItem('timetable:friends', friendsListData);
+    queryDB.setItemToDB('timetable:friends', friendsListData);
   }
 });

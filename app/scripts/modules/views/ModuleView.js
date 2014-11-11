@@ -201,7 +201,7 @@ module.exports = Marionette.LayoutView.extend({
       localforage.getItem(preferencesNamespace + item, function (value) {
         if (!value) {
           value = defaults[item];
-          queryDB.setItem(preferencesNamespace + item, value);
+          queryDB.setItemToDB(preferencesNamespace + item, value);
         }
         $(selector).val([value]);
         searchPreferences[item] = value;
@@ -359,7 +359,7 @@ module.exports = Marionette.LayoutView.extend({
       });
       return false;
     }
-    queryDB.setItem(preferencesNamespace + property, value);
+    queryDB.setItemToDB(preferencesNamespace + property, value);
     return true;
   }
 });

@@ -42,7 +42,7 @@ module.exports = Marionette.CollectionView.extend({
     });
 
     $('.collapse').on('shown.bs.collapse hidden.bs.collapse', function () {
-      queryDB.setItem(moduleFinderNamespace + 'facets', _.pluck($('.collapse.in'), 'id'));
+      localforage.setItem(moduleFinderNamespace + 'facets', _.pluck($('.collapse.in'), 'id'));
     });
   },
   events: {
@@ -57,7 +57,7 @@ module.exports = Marionette.CollectionView.extend({
           selectedFilters[facet.get('label')] = filters;
         }
       });
-      queryDB.setItem(moduleFinderNamespace + 'filters', selectedFilters);
+      localforage.setItem(moduleFinderNamespace + 'filters', selectedFilters);
     }
   },
 

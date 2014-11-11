@@ -57,11 +57,6 @@ for (var i = 0; i < 5; i++) {
   });
 }
 
-// sdk.post('me/app/a:b', {'data': 'xyz'}, function (response) {
-// });
-// sdk.get('me/app/clgt', function (response) {
-// });
-
 App.reqres.setHandler('selectedModules', function (sem) {
   return selectedModulesControllers[sem - 1].selectedModules;
 });
@@ -110,7 +105,7 @@ App.reqres.setHandler('addBookmark', function (id) {
     if (!_.contains(modules, id)) {
       modules.push(id);
     }
-    queryDB.setItem(bookmarkedModulesNamespace, modules);
+    queryDB.setItemToDB(bookmarkedModulesNamespace, modules);
   });
 });
 App.reqres.setHandler('deleteBookmark', function (id) {
@@ -118,7 +113,7 @@ App.reqres.setHandler('deleteBookmark', function (id) {
     var index = modules.indexOf(id);
     if (index > -1) {
       modules.splice(index, 1);
-      queryDB.setItem(bookmarkedModulesNamespace, modules);
+      queryDB.setItemToDB(bookmarkedModulesNamespace, modules);
     }
   });
 });
@@ -196,7 +191,7 @@ App.on('start', function () {
 
   localforage.getItem(bookmarkedModulesNamespace, function (modules) {
     if (!modules) {
-      queryDB.setItem(bookmarkedModulesNamespace, []);
+      queryDB.setItemToDB(bookmarkedModulesNamespace, []);
     }
   });
 });

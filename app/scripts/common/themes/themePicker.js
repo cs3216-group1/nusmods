@@ -58,7 +58,7 @@ module.exports = {
     return newMode;
   },
   updateAppearance: function (property, value) {
-    queryDB.setItem(preferencesNamespace + property, value);
+    queryDB.setItemToDB(preferencesNamespace + property, value);
     
     var $body = $('body');
     $body.attr('data-' + property, value);

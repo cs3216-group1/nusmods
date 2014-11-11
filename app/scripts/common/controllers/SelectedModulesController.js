@@ -29,8 +29,6 @@ module.exports = Marionette.Controller.extend({
 
     this.events = new EventCollection();
 
-    this.listenTo(this.selectedModules, 'add remove', this.modulesChanged);
-    this.listenTo(this.timetable, 'change', this.modulesChanged);
     this.listenTo(this.timetable, 'skip', this.skippedChanged);
     this.listenTo(this.events, 'add remove', this.eventsChanged);
     if (this.saveOnChange) {
@@ -43,7 +41,7 @@ module.exports = Marionette.Controller.extend({
     if (!this.selectedModules.shared) {
       var selectedModules = this.selectedModules.toQueryString();
       var url = config.semTimetableFragment(this.semester) + ':queryString';
-      queryDB.setItem(url, selectedModules);
+      queryDB.setItemToDB(url, selectedModules);
     }
   },
 
@@ -51,14 +49,14 @@ module.exports = Marionette.Controller.extend({
     if (!this.selectedModules.shared) {
       var skippedLessons = this.skippedLessons;
       var url = config.semTimetableFragment(this.semester) + ':skippedLessons';
-      queryDB.setItem(url, skippedLessons);
+      queryDB.setItemToDB(url, skippedLessons);
     }
   },
 
   eventsChanged: function () {
     if (!this.selectedModules.shared) {
       var url = config.semTimetableFragment(this.semester) + ':events';
-      queryDB.setItem(url, this.events.toQueryString());
+      queryDB.setItemToDB(url, this.events.toQueryString());
     }
   },
 

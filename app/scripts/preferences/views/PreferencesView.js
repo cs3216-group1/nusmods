@@ -64,7 +64,7 @@ module.exports = Marionette.LayoutView.extend({
       window.ivleLoginSuccessful = function (token) {
         $('#ivle-status-success').addClass('hidden');
         $('#ivle-status-loading').removeClass('hidden');
-        queryDB.setItem(ivleNamespace + 'ivleToken', token);
+        queryDB.setItemToDB(ivleNamespace + 'ivleToken', token);
         that.fetchModuleHistory(token);
         window.ivleLoginSuccessful = undefined;
       };
@@ -101,7 +101,7 @@ module.exports = Marionette.LayoutView.extend({
     );
   },
   saveModuleHistory: function (moduleHistory) {
-    queryDB.setItem(ivleNamespace + 'ivleModuleHistory', moduleHistory.Results);
+    queryDB.setItemToDB(ivleNamespace + 'ivleModuleHistory', moduleHistory.Results);
     $('#ivle-status-success').removeClass('hidden');
     $('#ivle-status-loading').addClass('hidden');
   },
@@ -123,7 +123,7 @@ module.exports = Marionette.LayoutView.extend({
       });
       return;
     }
-    queryDB.setItem(preferencesNamespace + property, value);
+    queryDB.setItemToDB(preferencesNamespace + property, value);
     if (property === 'theme') {
       themePicker.applyTheme(value);
     } else if (property === 'mode') {
