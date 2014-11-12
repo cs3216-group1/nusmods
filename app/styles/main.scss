@@ -428,6 +428,17 @@ kbd {
   }
 }
 
+#playlist {
+  padding: 0;
+  label {
+    font-weight: normal;
+  }
+  ul {
+    list-style: none;
+    padding: 0;
+  }
+}
+
 .arrow-right {
   display: inline-block;
   width: 0;
