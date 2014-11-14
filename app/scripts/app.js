@@ -137,6 +137,8 @@ App.on('start', function () {
   require('./venues');
   require('./chatroom');
   require('./preferences');
+  require('./merger');
+
 
   // footer modules
   require('./about');
