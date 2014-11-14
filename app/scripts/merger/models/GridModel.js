@@ -48,15 +48,21 @@ module.exports = Backbone.Model.extend({
 		}else{
 			var message = numOfClash + ' cannot make it';
 
-			if(numOfClash === 1){
-				var persons = _.map(this.GridInfo,function(value){
+			var persons = _.map(this.GridInfo,function(value){
 					return _.map(value, function(v,k){
 						return k;	
 					})	
 				},this);
 
+			if(numOfClash === 1){
 				return {message: persons[0] + ' cannot make it'};
 				
+			}else if(numOfClash === 2){
+				return {message: persons[0] + ' and ' + persons[1] + ' cannot make it'};
+			}else if (numOfClash ===3){
+				return {message: persons[0] + ' and ' + persons[1] + ' and ' + persons[2] + ' cannot make it'}; 
+			}else{
+				return {message: persons[0] + ' and ' + persons[1] + ' and ' + persons[2] + ' and other' + (persons - 3) + ' cannot make it'}; 
 			}
 
 			// var persons = _.map(this.GridInfo,function(value){
