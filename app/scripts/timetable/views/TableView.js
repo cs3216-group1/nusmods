@@ -34,11 +34,21 @@ module.exports = Marionette.CompositeView.extend({
   initialize: function(){
     console.log('initialize table View');
     console.log(this.$el);
-    var self = this;
+
+    // this.$el.popover({
+    //     html: true,
+    //     content: function(){
+    //       console.log('pop over hahahahaa');
+    //       return AddEventModal();
+    //     }
+    //   });
+
     this.$el.on('dblclick','tbody tr td',function(element){
 
       var tbodyID = $(this.parentElement.parentElement).attr('id');
       var tdID = $(this).attr('class');
+
+
 
       console.log(self.$('#mon'));
       console.log(tbodyID);

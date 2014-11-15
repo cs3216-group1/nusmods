@@ -128,9 +128,8 @@ App.on('start', function () {
   require('./timetable');
   require('./modules');
   // require('ivle');
-  require('./chatroom');
-  require('./preferences');
   require('./merger');
+  require('./preferences');
 
 
   // footer modules
