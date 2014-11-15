@@ -9,7 +9,7 @@ var template = require('../templates/table.hbs');
 module.exports = Marionette.CompositeView.extend({
   id: 'timetable',
   tagName: 'table',
-  childView: LessonView,
+  // childView: LessonView,
   childViewOptions: function () {
     return {
       parentView: this,
@@ -26,6 +26,16 @@ module.exports = Marionette.CompositeView.extend({
 
   ui: {
     colgroups: 'colgroup'
+  },
+
+  getChildView: function(item){
+    console.log('getChildView');
+    console.log(item);
+    if(item.get('ViewType') === 'lesson'){
+      console.log('view type is lesson');
+      return LessonView;
+    }
+   
   },
 
   mouseMove: function(evt) {

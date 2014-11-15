@@ -181,10 +181,12 @@ App.on('start', function () {
       .then(function (savedQueryString) {
       var addedEvents = EventCollection.fromQueryStringToJSON(savedQueryString);
       // for testing purpose
-      // var addedEvents = [{title: "Event Title 1",
-      //                     start: "hey, start time, remember to modify it",
-      //                     end: "end time",
-      //                     }];
+      var addedEvents = [{title: "Event Title 1",
+                          start: "hey, start time, remember to modify it",
+                          end: "end time",
+                          dayAbbrev: 'wed',
+                          venue: 'LT 19'
+                          }];
       return Promise.all(_.map(addedEvents, function(event) {
         return App.request('addEvent', semester, event.title, event.start, event.end);
       }));

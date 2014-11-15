@@ -8,13 +8,15 @@ var _ = require('underscore');
 module.exports = Backbone.Collection.extend({
   model: Event,
 
-  initialize: function () {
+  initialize: function (model,options) {
+    this.timetable = options.timetable;
     this.on('add', this.onAdd, this);
     this.on('remove', this.onRemove, this);
   },
 
   onAdd: function(event) {
-
+    console.log("on add event is ");
+    console.log(event);
   },
 
   onRemove: function() {

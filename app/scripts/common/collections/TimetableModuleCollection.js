@@ -63,7 +63,8 @@ module.exports = ModuleCollection.extend({
               ModuleCode: module.id,
               ModuleTitle: module.get('ModuleTitle'),
               sameGroup: sameGroup,
-              sameType: sameType
+              sameType: sameType,
+              ViewType: 'lesson'
             }, lessonData));
             lessons.add(lesson);
             sameGroup.add(lesson);

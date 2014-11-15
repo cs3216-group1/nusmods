@@ -27,7 +27,7 @@ module.exports = Marionette.Controller.extend({
       getSkippedLessons: this.getSkippedLessons
     });
 
-    this.events = new EventCollection();
+    this.events = new EventCollection([],{timetable:this.timetable});
 
     this.listenTo(this.timetable, 'skip', this.skippedChanged);
     this.listenTo(this.events, 'add remove', this.eventsChanged);
