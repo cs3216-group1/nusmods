@@ -15,8 +15,16 @@ module.exports = Backbone.Collection.extend({
   },
 
   onAdd: function(event) {
-    console.log("on add event is ");
-    console.log(event);
+
+    if (!this.colors || !this.colors.length) {
+      this.colors = [0, 1, 2, 3, 4, 5, 6, 7];
+    }
+    var color = this.colors.splice(Math.floor(Math.random() * this.colors.length), 1)[0];
+    event.set('color', color);
+    event.set('ViewType','event');
+    event.set('display',true);
+
+    this.timetable.add(event);
   },
 
   onRemove: function() {
@@ -27,10 +35,12 @@ module.exports = Backbone.Collection.extend({
     var qsArray = [];
     this.each(function (event) {
       var eventObject = {
-        title: event.get('Title'),
-        start: event.get('Start'), 
-        end: event.get('End'), 
-        sem: event.get('Semester')
+        Title: event.get('Title'),
+        StartTime: event.get('StartTime'), 
+        EndTime: event.get('EndTime'), 
+        DayAbbrev: event.get('DayAbbrev'),
+        Venue: event.get('Venue'),
+        Duration: event.get('Duration')
       };
       qsArray.push(eventObject);
     }, this);

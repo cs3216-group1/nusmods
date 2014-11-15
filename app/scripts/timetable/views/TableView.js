@@ -2,9 +2,11 @@
 
 var $ = require('jquery');
 var LessonView = require('./LessonView');
+var EventView = require('./EventView');
 var Marionette = require('backbone.marionette');
 var _ = require('underscore');
 var template = require('../templates/table.hbs');
+var AddEventModal = require('../templates/add_event_modal.hbs');
 
 module.exports = Marionette.CompositeView.extend({
   id: 'timetable',
@@ -25,15 +27,43 @@ module.exports = Marionette.CompositeView.extend({
   },
 
   ui: {
-    colgroups: 'colgroup'
+    colgroups: 'colgroup',
+    'addEvent': 'tbody tr td'
+  },
+
+  initialize: function(){
+    console.log('initialize table View');
+    console.log(this.$el);
+    var self = this;
+    this.$el.on('dblclick','tbody tr td',function(element){
+
+      var tbodyID = $(this.parentElement.parentElement).attr('id');
+      var tdID = $(this).attr('class');
+
+      console.log(self.$('#mon'));
+      console.log(tbodyID);
+      console.log(tdID);
+      // self.$("#mon").popover({ 
+      //     title: 'some title',
+      //     content: 'helo world' ,
+      //     trigger: 'hover' // show up on hover default is 'click'
+      // });
+
+      // self.$el.popover({
+      //   html: true,
+      //   content: function(){
+      //     console.log('pop over hahahahaa');
+      //     return AddEventModal();
+      //   }
+      // });
+    });
   },
 
   getChildView: function(item){
-    console.log('getChildView');
-    console.log(item);
     if(item.get('ViewType') === 'lesson'){
-      console.log('view type is lesson');
       return LessonView;
+    }else if(item.get('ViewType') === 'event'){
+      return EventView;
     }
    
   },

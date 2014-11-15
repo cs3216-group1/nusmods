@@ -81,13 +81,8 @@ App.reqres.setHandler('displayLessons', function (sem, id, display) {
   });
 });
 
-App.reqres.setHandler('addEvent', function(sem, title, start, end) {
-  return selectedModulesControllers[sem - 1].events.add({
-    Title: title,
-    Start: start,
-    End: end,
-    Semester: sem
-  })
+App.reqres.setHandler('addEvent', function(sem,event) {
+  return selectedModulesControllers[sem - 1].events.add(event);
 });
 
 var bookmarkedModulesNamespace = config.namespaces.bookmarkedModules + ':';
@@ -179,16 +174,17 @@ App.on('start', function () {
     var semTimetableFragment = config.semTimetableFragment(semester);
     return localforage.getItem(semTimetableFragment + ':events')
       .then(function (savedQueryString) {
-      var addedEvents = EventCollection.fromQueryStringToJSON(savedQueryString);
+      // var addedEvents = EventCollection.fromQueryStringToJSON(savedQueryString);
       // for testing purpose
-      var addedEvents = [{title: "Event Title 1",
-                          start: "hey, start time, remember to modify it",
-                          end: "end time",
-                          dayAbbrev: 'wed',
-                          venue: 'LT 19'
+      var addedEvents = [{Title: "Event Title 1",
+                          StartTime: "0800",
+                          EndTime: "1000",
+                          DayAbbrev: 'wed',
+                          Venue: 'LT 19',
+                          Duration: 4
                           }];
       return Promise.all(_.map(addedEvents, function(event) {
-        return App.request('addEvent', semester, event.title, event.start, event.end);
+        return App.request('addEvent', semester, event);
       }));
     });
   }));
