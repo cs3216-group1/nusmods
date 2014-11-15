@@ -1,0 +1,38 @@
+// Common base timetable styles to be embedded in exported html as well as
+// imported into main styles.
+
+.mday {
+  border-top: 1px solid $table-border-color;
+  border-bottom: 1px solid $table-border-color;
+  th {
+    border-top: 1px solid transparent;
+    border-bottom: 1px solid transparent;
+    div {
+      line-height: 15px;
+      margin-left: 20px;
+    }
+  }
+  td {
+    height: 68px;
+    padding: 0px 0 0;
+  }
+}
+.m00 {
+  border-left: 1px solid $table-border-color;
+}
+.m30 {
+  border-right: 1px solid $table-border-color;
+}
+.grid {
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+}
+
+.hide-code .code,
+.hide-group .group,
+.hide-room .room,
+.hide-title .title,
+.hide-week .week {
+  display: none;
+}

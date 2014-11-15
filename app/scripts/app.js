@@ -119,7 +119,9 @@ App.on('start', function () {
   require('./modules');
   require('./timetable');
   // require('ivle');
+  require('./merger');
   require('./preferences');
+
 
   // footer modules
   require('./about');
