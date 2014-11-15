@@ -34,7 +34,7 @@ var App = new Marionette.Application();
 
 App.addRegions({
   mainRegion: '.content',
-  navigationRegion: '#nav',
+  navigationRegion: 'nav',
   selectRegion: '.navbar-form',
   bookmarksRegion: '.nm-bookmarks'
 });
@@ -128,8 +128,6 @@ App.on('start', function () {
   require('./timetable');
   require('./modules');
   // require('ivle');
-  require('./friends');
-  require('./venues');
   require('./chatroom');
   require('./preferences');
   require('./merger');
