@@ -28,6 +28,13 @@ module.exports = Marionette.LayoutView.extend({
   initialize: function () {
     // TODO: Populate default values of form elements for first time users.
     _.each(this.ui, function (selector, item) {
+      localforage.getItem(preferencesNamespace + item, function (hacky) {
+        queryDB.getItemFromDB(preferencesNamespace + item, function (value) {
+          if (value) {
+            $(selector).val([value]);
+          }
+        });
+      });
       queryDB.getItemFromDB(preferencesNamespace + item, function (value) {
         if (value) {
           $(selector).val([value]);

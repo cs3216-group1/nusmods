@@ -20,7 +20,7 @@ var queryDB = require('../../common/utils/queryDB');
 
 
 var navigationItem = App.request('addNavigationItem', {
-  name: 'Scheduler',
+  name: 'Merge',
   icon: 'table',
   url: '/scheduler'
 });
