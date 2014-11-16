@@ -33,8 +33,6 @@ Backbone.History.prototype.loadUrl = function() {
 
 var App = new Marionette.Application();
 
-var loginStatus = false;
-
 App.addRegions({
   mainRegion: '.content',
   navigationRegion: 'nav',
@@ -59,15 +57,6 @@ for (var i = 0; i < 5; i++) {
     semester: i + 1
   });
 }
-
-App.reqres.setHandler('isLogin',function(){
-  return loginStatus;
-});
-
-App.reqres.setHandler('setLoginStatus',function(status){
-  console.log('setLoginStatus ' + status);
-  loginStatus = status;
-});
 
 App.reqres.setHandler('selectedModules', function (sem) {
   return selectedModulesControllers[sem - 1].selectedModules;
@@ -115,6 +104,7 @@ App.reqres.setHandler('addBookmark', function (id) {
     queryDB.setItemToDB(bookmarkedModulesNamespace, modules);
   });
 });
+
 App.reqres.setHandler('deleteBookmark', function (id) {
   localforage.getItem(bookmarkedModulesNamespace, function (modules) {
     var index = modules.indexOf(id);
@@ -122,6 +112,72 @@ App.reqres.setHandler('deleteBookmark', function (id) {
       modules.splice(index, 1);
       queryDB.setItemToDB(bookmarkedModulesNamespace, modules);
     }
+  });
+});
+
+App.reqres.setHandler('loadUserModules',function(){
+  for (var i = 0; i < 5; i++) {
+    selectedModulesControllers[i] = new SelectedModulesController({
+      semester: i + 1
+    });
+  }
+
+  return _.map(_.range(1, 5), function(semester) {
+    var semTimetableFragment = config.semTimetableFragment(semester);
+    var url = semTimetableFragment + ':queryString';
+
+    sdk.getLoginStatus(function(response){
+      console.log(response);
+      response = JSON.parse(response);
+      var status = response['status'];
+
+      if(status === 'connected'){
+        return queryDB.getItemFromDB(url,function(savedQueryString){
+          if ('/' + semTimetableFragment === window.location.pathname) {
+            var queryString = window.location.search.slice(1);
+            if (queryString) {
+              if (savedQueryString !== queryString) {
+                // If initial query string does not match saved query string,
+                // timetable is shared.
+                App.request('selectedModules', semester).shared = true;
+              }
+              // If there is a query string for timetable, return so that it will
+              // be used instead of saved query string.
+              return;
+            }
+          }
+          var selectedModules = TimetableModuleCollection.fromQueryStringToJSON(savedQueryString);
+
+          return Promise.all(_.map(selectedModules, function (module) {
+            return App.request('addModule', semester, module.ModuleCode, module);
+          }));
+        });
+      }else{
+        return localforage.getItem(semTimetableFragment + ':queryString')
+          .then(function (savedQueryString) {
+          if ('/' + semTimetableFragment === window.location.pathname) {
+            var queryString = window.location.search.slice(1);
+            if (queryString) {
+              if (savedQueryString !== queryString) {
+                // If initial query string does not match saved query string,
+                // timetable is shared.
+                App.request('selectedModules', semester).shared = true;
+              }
+              // If there is a query string for timetable, return so that it will
+              // be used instead of saved query string.
+              return;
+            }
+          }
+          var selectedModules = TimetableModuleCollection.fromQueryStringToJSON(savedQueryString);
+
+          return Promise.all(_.map(selectedModules, function (module) {
+            return App.request('addModule', semester, module.ModuleCode, module);
+          }));
+        });
+      }
+    });
+
+
   });
 });
 
@@ -149,82 +205,31 @@ App.on('start', function () {
   require('./help');
   require('./support');
 
-  Promise.all(_.map(_.range(1, 5), function(semester) {
-    var semTimetableFragment = config.semTimetableFragment(semester);
-    var url = semTimetableFragment + ':queryString';
-
-    var status = App.request('isLogin');
-
-    console.log('login status is ' + status);
-    if(status){
-      return queryDB.getItemFromDB(url,function(savedQueryString){
-        if ('/' + semTimetableFragment === window.location.pathname) {
-          var queryString = window.location.search.slice(1);
-          if (queryString) {
-            if (savedQueryString !== queryString) {
-              // If initial query string does not match saved query string,
-              // timetable is shared.
-              App.request('selectedModules', semester).shared = true;
-            }
-            // If there is a query string for timetable, return so that it will
-            // be used instead of saved query string.
-            return;
-          }
-        }
-        var selectedModules = TimetableModuleCollection.fromQueryStringToJSON(savedQueryString);
-
-        return Promise.all(_.map(selectedModules, function (module) {
-          return App.request('addModule', semester, module.ModuleCode, module);
-        }));
-      });
-    }else{
-      return localforage.getItem(semTimetableFragment + ':queryString')
-        .then(function (savedQueryString) {
-        if ('/' + semTimetableFragment === window.location.pathname) {
-          var queryString = window.location.search.slice(1);
-          if (queryString) {
-            if (savedQueryString !== queryString) {
-              // If initial query string does not match saved query string,
-              // timetable is shared.
-              App.request('selectedModules', semester).shared = true;
-            }
-            // If there is a query string for timetable, return so that it will
-            // be used instead of saved query string.
-            return;
-          }
-        }
-        var selectedModules = TimetableModuleCollection.fromQueryStringToJSON(savedQueryString);
-
-        return Promise.all(_.map(selectedModules, function (module) {
-          return App.request('addModule', semester, module.ModuleCode, module);
-        }));
-      });
-    }
-  }).concat([NUSMods.generateModuleCodes()])).then(function () {
+  Promise.all(App.request('loadUserModules').concat([NUSMods.generateModuleCodes()])).then(function () {
     new AppView();
 
     Backbone.history.start({pushState: true});
   });
 
 
-  Promise.all(_.map(_.range(1, 5), function(semester) {
-    var semTimetableFragment = config.semTimetableFragment(semester);
-    return localforage.getItem(semTimetableFragment + ':events')
-      .then(function (savedQueryString) {
-      // var addedEvents = EventCollection.fromQueryStringToJSON(savedQueryString);
-      // for testing purpose
-      var addedEvents = [{Title: "Event Title 1",
-                          StartTime: "0800",
-                          EndTime: "1000",
-                          DayAbbrev: 'wed',
-                          Venue: 'LT 19',
-                          Duration: 4
-                          }];
-      return Promise.all(_.map(addedEvents, function(event) {
-        return App.request('addEvent', semester, event);
-      }));
-    });
-  }));
+  // Promise.all(_.map(_.range(1, 5), function(semester) {
+  //   var semTimetableFragment = config.semTimetableFragment(semester);
+  //   return localforage.getItem(semTimetableFragment + ':events')
+  //     .then(function (savedQueryString) {
+  //     // var addedEvents = EventCollection.fromQueryStringToJSON(savedQueryString);
+  //     // for testing purpose
+  //     var addedEvents = [{Title: "Event Title 1",
+  //                         StartTime: "0800",
+  //                         EndTime: "1000",
+  //                         DayAbbrev: 'wed',
+  //                         Venue: 'LT 19',
+  //                         Duration: 4
+  //                         }];
+  //     return Promise.all(_.map(addedEvents, function(event) {
+  //       return App.request('addEvent', semester, event);
+  //     }));
+  //   });
+  // }));
 
   localforage.getItem(bookmarkedModulesNamespace, function (modules) {
     if (!modules) {

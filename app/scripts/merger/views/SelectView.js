@@ -70,11 +70,8 @@ module.exports = Marionette.ItemView.extend({
     var url = semTimetableFragment + ':queryString';
 
     var self = this;
-    queryDB.getUserInfoFromDB(userID,url,function(timetableString){
-      console.log('timetableString');
-      console.log(timetableString);   
+    queryDB.getUserInfoFromDB(userID,url,function(timetableString){  
       self.trigger('superview:addMember',{person:name,timetableString:timetableString});
-   
     });
 
 
@@ -99,9 +96,10 @@ module.exports = Marionette.ItemView.extend({
             results = [],
             pushResult = function (i) {
               var code = data[i].userId;
-              if(self.members.where({person:code}).length === 0){
+              var name = data[i].name;
+              if(self.members.where({person:name}).length === 0){
                 results.push({
-                  id: {userID: code, name: data[i].name},
+                  id: {userID: code, name: name},
                   text: data[i].name
                 });
               }

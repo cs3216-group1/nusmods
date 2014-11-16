@@ -9,6 +9,7 @@ var template = require('../templates/preferences.hbs');
 var themePicker = require('../../common/themes/themePicker');
 var config = require('../../common/config');
 var queryDB = require('../../common/utils/queryDB');
+var Backbone = require('backbone');
 
 var preferencesNamespace = config.namespaces.preferences + ':';
 var ivleNamespace = config.namespaces.ivle + ':';
@@ -142,13 +143,17 @@ module.exports = Marionette.LayoutView.extend({
         queryDB.getItemFromDB(config.semTimetableFragment(semester) + ':queryString');
       }, this);
       queryDB.getItemFromDB(bookmarkedModulesNamespace);
-      App.request('setLoginStatus', true);
+
+      Promise.all(App.request('loadUserModules')).then(function () {
+        Backbone.history.navigate('timetable', {trigger: true, replace: true});
+      });
     });
   },
   cloudLogout: function () {
     sdk.logout(function () {
-      localforage.clear();
-       App.request('setLoginStatus', false);
+      Promise.all(App.request('loadUserModules')).then(function () {
+        Backbone.history.navigate('timetable', {trigger: true, replace: true});
+      });
     });
   }
 });
