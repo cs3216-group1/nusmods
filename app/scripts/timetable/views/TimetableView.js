@@ -41,8 +41,14 @@ module.exports = Marionette.LayoutView.extend({
     this.timetable = this.selectedModules.timetable;
     this.skippedLessons = this.selectedModules.skippedLessons;
 
-    this.listenTo(this.selectedModules, 'add remove', this.modulesChanged);
-    this.listenTo(this.timetable, 'change', this.modulesChanged);
+    this.listenTo(this.selectedModules, 'add remove', function(){
+      console.log('add remove modulesChanged');
+      this.modulesChanged(); 
+    });
+    this.listenTo(this.timetable, 'change', function(){
+      console.log('add remove modulesChanged');
+      this.modulesChanged();
+    });
 
     this.examsRegion.show(new ExamsView({collection: this.selectedModules.exams}));
     this.exportRegion.show(new ExportView({
@@ -75,9 +81,7 @@ module.exports = Marionette.LayoutView.extend({
   },
 
   modulesChanged: function (model, collection, options) {
-    alert('hey ');
     if (this.selectedModules.length) {
-      alert('modulesChanged');
       console.log((this.semester) + '?' + this.selectedModules.toQueryString());
       Backbone.history.navigate(config.semTimetableFragment(this.semester) +
         '?' + this.selectedModules.toQueryString(), options);

@@ -88,8 +88,7 @@ module.exports = Marionette.ItemView.extend({
       multiple: true,
       query: function (options) {
         queryDB.getFriendsListFromDB(function(friendsList){
-          console.log("friendsList");
-          console.log(friendsList);
+
           var data = friendsList;
 
           var i,
