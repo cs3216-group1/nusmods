@@ -198,6 +198,7 @@ App.on('start', function () {
   // require('ivle');
   require('./merger');
   require('./preferences');
+  require('./login');
 
 
   // footer modules

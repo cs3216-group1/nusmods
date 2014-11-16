@@ -257,24 +257,24 @@ kbd {
 
 .navbar-header {
   @media (min-width: $screen-sm-min) {
-    width: 550px;
+    width: 460px;
   }
   @media (min-width: $screen-lg-min) {
-    width: 700px;
+    width: 650px;
   }
 }
 
 .navbar-form .form-control {
-  width: 240px;
+  width: 200px;
   margin-left: $navbar-padding-horizontal;
   @media (min-width: $screen-xs-min) {
-    width: 300px;
+    width: 270px;
   }
   @media (min-width: $screen-sm-min) {
-    width: 350px;
+    width: 270px;
   }
   @media (min-width: $screen-lg-min) {
-    width: 500px;
+    width: 450px;
   }
 }
 
@@ -378,15 +378,15 @@ kbd {
   @include clearfix();
   .code-title {
     float: left;
-    width: 150px;
+    width: 130px;
     @media (min-width: $screen-xs-min) {
-      width: 210px;
+      width: 170px;
     }
     @media (min-width: $screen-sm-min) {
-      width: 260px;
+      width: 220px;
     }
     @media (min-width: $screen-lg-min) {
-      width: 410px;
+      width: 360px;
     }
   }
   .semesters {
