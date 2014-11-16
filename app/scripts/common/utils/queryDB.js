@@ -77,5 +77,5 @@ module.exports = {
       response = JSON.parse(response);
       callback(response['data']);
     });
-  }
+  },
 };

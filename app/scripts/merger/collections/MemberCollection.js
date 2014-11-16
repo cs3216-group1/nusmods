@@ -11,12 +11,6 @@ var queryDB = require('../../common/utils/queryDB');
 module.exports = Backbone.Collection.extend({
   model: Member,
   initialize:function(){;
-  	var semTimetableFragment = config.semTimetableFragment();
-    var url = semTimetableFragment + ':queryString';
-
-    var self = this;
-    queryDB.getItemFromDB('',function(timetableString){  
-    	console.log('hey, we are trying to get item');
-    });
+  	
   }
 });
