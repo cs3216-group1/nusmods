@@ -26,19 +26,20 @@ Promise.all(_.keys(config.defaultPreferences).map(function (property) {
     if (!value) {
       value = config.defaultPreferences[property];
     }
-    queryDB.setItemToDB(preferencesNamespace + property, value);
+    return localforage.setItem(preferencesNamespace + property, value);
   });
-}));
-
-Promise.all(['theme', 'mode'].map(function (property) {
-  return localforage.getItem(preferencesNamespace + property).then(function (value) {
-    $body.addClass(property + '-' + value);
-    $body.attr('data-' + property, value);
-    if (property === 'mode' && value !== 'default') {
-      $('#mode').attr('href', '/styles/' + value + '.min.css');
-    }
-  });
-})).then(analytics.flush);
+}))
+.then(function () { 
+  return Promise.all(['theme', 'mode'].map(function (property) {
+    return localforage.getItem(preferencesNamespace + property).then(function (value) {
+      $body.addClass(property + '-' + value);
+      $body.attr('data-' + property, value);
+      if (property === 'mode' && value !== 'default') {
+        $('#mode').attr('href', '/styles/' + value + '.min.css');
+      }
+    });
+  })); 
+}).then(analytics.flush);
 
 var App = require('./app');
 App.start();

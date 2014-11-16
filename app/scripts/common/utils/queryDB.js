@@ -5,7 +5,7 @@ var Promise = require('bluebird'); // jshint ignore:line
 
 module.exports = {
   setItemToDB: function (key, value, callback) {
-    sdk.getLoginStatus(function(response){
+    sdk.getLoginStatus(function(response) {
       response = JSON.parse(response);
       var status = response['status'];
       if(status == 'connected'){
@@ -15,7 +15,7 @@ module.exports = {
             return;
           }
         });
-      }else{
+      } else {
         localforage.setItem(key, value).then(function (val) {
           if (callback) {
             callback(val);
@@ -26,8 +26,7 @@ module.exports = {
     });
   },
   getItemFromDB: function (key, callback) {
-
-    sdk.getLoginStatus(function(response){
+    sdk.getLoginStatus(function(response) {
       response = JSON.parse(response);
       var status = response['status'];
       if(status == 'connected'){
@@ -40,16 +39,13 @@ module.exports = {
           if (response.status === 'absent') {
             return;
           }
-
           if (callback) {
-            console.log('value is ');
-            console.log(value);
             callback(value);
             return;
           }
           
         });
-      }else{
+      } else {
         localforage.getItem(key).then(function (value) {
           if (callback) {
             callback(value);
@@ -59,8 +55,6 @@ module.exports = {
       }
     });
 
-
-    
   },
 
   getFriendsListFromDB: function(callback){
@@ -79,7 +73,7 @@ module.exports = {
     }
 
     sdk.get(baseURL,function(response){
-      console.log(response);
+      //console.log(response);
       response = JSON.parse(response);
       callback(response['data']);
     });

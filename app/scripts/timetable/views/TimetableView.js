@@ -81,6 +81,7 @@ module.exports = Marionette.LayoutView.extend({
   },
 
   modulesChanged: function (model, collection, options) {
+    console.log(this.semester);
     if (this.selectedModules.length) {
       console.log((this.semester) + '?' + this.selectedModules.toQueryString());
       Backbone.history.navigate(config.semTimetableFragment(this.semester) +

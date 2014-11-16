@@ -28,14 +28,21 @@ module.exports = Marionette.LayoutView.extend({
   initialize: function () {
     // TODO: Populate default values of form elements for first time users.
     _.each(this.ui, function (selector, item) {
-      localforage.getItem(preferencesNamespace + item, function (value) {
+      localforage.getItem(preferencesNamespace + item, function (hacky) {
+        queryDB.getItemFromDB(preferencesNamespace + item, function (value) {
+          if (value) {
+            $(selector).val([value]);
+          }
+        });
+      });
+      queryDB.getItemFromDB(preferencesNamespace + item, function (value) {
         if (value) {
           $(selector).val([value]);
         }
       });
     });
 
-    localforage.getItem(ivleNamespace + 'ivleModuleHistory', function (value) {
+    queryDB.getItemFromDB(ivleNamespace + 'ivleModuleHistory', function (value) {
       if (value) {
         $('#ivle-status-success').removeClass('hidden');
       }
@@ -134,7 +141,6 @@ module.exports = Marionette.LayoutView.extend({
   },
   cloudLogin: function () {
     sdk.login(function () {
-
       _.each(config.defaultPreferences, function (value, key, list) {
         queryDB.getItemFromDB(preferencesNamespace + key);
       }, this);
