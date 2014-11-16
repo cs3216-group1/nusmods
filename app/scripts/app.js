@@ -14,6 +14,7 @@ var config = require('./common/config');
 var localforage = require('localforage');
 var queryDB = require('./common/utils/queryDB');
 var $ = require('jquery');
+
 require('qTip2');
 
 // Set Backbone.History.initialRoute to allow route handlers to find out if they
@@ -31,6 +32,8 @@ Backbone.History.prototype.loadUrl = function() {
 };
 
 var App = new Marionette.Application();
+
+var loginStatus = false;
 
 App.addRegions({
   mainRegion: '.content',
@@ -56,6 +59,15 @@ for (var i = 0; i < 5; i++) {
     semester: i + 1
   });
 }
+
+App.reqres.setHandler('isLogin',function(){
+  return loginStatus;
+});
+
+App.reqres.setHandler('setLoginStatus',function(status){
+  console.log('setLoginStatus ' + status);
+  loginStatus = status;
+});
 
 App.reqres.setHandler('selectedModules', function (sem) {
   return selectedModulesControllers[sem - 1].selectedModules;
@@ -139,27 +151,55 @@ App.on('start', function () {
 
   Promise.all(_.map(_.range(1, 5), function(semester) {
     var semTimetableFragment = config.semTimetableFragment(semester);
-    return localforage.getItem(semTimetableFragment + ':queryString')
-      .then(function (savedQueryString) {
-      if ('/' + semTimetableFragment === window.location.pathname) {
-        var queryString = window.location.search.slice(1);
-        if (queryString) {
-          if (savedQueryString !== queryString) {
-            // If initial query string does not match saved query string,
-            // timetable is shared.
-            App.request('selectedModules', semester).shared = true;
-          }
-          // If there is a query string for timetable, return so that it will
-          // be used instead of saved query string.
-          return;
-        }
-      }
-      var selectedModules = TimetableModuleCollection.fromQueryStringToJSON(savedQueryString);
+    var url = semTimetableFragment + ':queryString';
 
-      return Promise.all(_.map(selectedModules, function (module) {
-        return App.request('addModule', semester, module.ModuleCode, module);
-      }));
-    });
+    var status = App.request('isLogin');
+
+    console.log('login status is ' + status);
+    if(status){
+      return queryDB.getItemFromDB(url,function(savedQueryString){
+        if ('/' + semTimetableFragment === window.location.pathname) {
+          var queryString = window.location.search.slice(1);
+          if (queryString) {
+            if (savedQueryString !== queryString) {
+              // If initial query string does not match saved query string,
+              // timetable is shared.
+              App.request('selectedModules', semester).shared = true;
+            }
+            // If there is a query string for timetable, return so that it will
+            // be used instead of saved query string.
+            return;
+          }
+        }
+        var selectedModules = TimetableModuleCollection.fromQueryStringToJSON(savedQueryString);
+
+        return Promise.all(_.map(selectedModules, function (module) {
+          return App.request('addModule', semester, module.ModuleCode, module);
+        }));
+      });
+    }else{
+      return localforage.getItem(semTimetableFragment + ':queryString')
+        .then(function (savedQueryString) {
+        if ('/' + semTimetableFragment === window.location.pathname) {
+          var queryString = window.location.search.slice(1);
+          if (queryString) {
+            if (savedQueryString !== queryString) {
+              // If initial query string does not match saved query string,
+              // timetable is shared.
+              App.request('selectedModules', semester).shared = true;
+            }
+            // If there is a query string for timetable, return so that it will
+            // be used instead of saved query string.
+            return;
+          }
+        }
+        var selectedModules = TimetableModuleCollection.fromQueryStringToJSON(savedQueryString);
+
+        return Promise.all(_.map(selectedModules, function (module) {
+          return App.request('addModule', semester, module.ModuleCode, module);
+        }));
+      });
+    }
   }).concat([NUSMods.generateModuleCodes()])).then(function () {
     new AppView();
 

@@ -8,6 +8,9 @@ var NUSMods = require('../../nusmods');
 var analytics = require('../../analytics');
 var template = require('../templates/select.hbs');
 var Backbone = require('backbone');
+var queryDB = require('../../common/utils/queryDB');
+var config = require('../../common/config');
+
 
 require('select2');
 
@@ -52,12 +55,28 @@ module.exports = Marionette.ItemView.extend({
   initialize: function (options) {
     this.semester = options.semester;
     this.members = options.members;
+
+    console.log("merger select view init");
+    queryDB;
   },
 
   onSelect2Selecting: function (event) {
     event.preventDefault();
 
-    this.trigger('superview:addMember',{person:event.val,timetableString:mtimetable[event.val]});
+    console.log(event.val);
+    var userID = event.val.userID;
+    var name = event.val.name;
+    var semTimetableFragment = config.semTimetableFragment(this.semester);
+    var url = semTimetableFragment + ':queryString';
+
+    var self = this;
+    queryDB.getUserInfoFromDB(userID,url,function(timetableString){
+      console.log('timetableString');
+      console.log(timetableString);   
+      self.trigger('superview:addMember',{person:name,timetableString:timetableString});
+   
+    });
+
 
     this.ui.input.select2('focus');
   },
@@ -66,18 +85,24 @@ module.exports = Marionette.ItemView.extend({
     var PAGE_SIZE = 50;
     var semester = this.semester;
     var self = this;
+
+
     this.ui.input.select2({
       multiple: true,
       query: function (options) {
+        queryDB.getFriendsListFromDB(function(friendsList){
+          console.log("friendsList");
+          console.log(friendsList);
+          var data = friendsList;
 
           var i,
             results = [],
             pushResult = function (i) {
-              var code = data[i].person;
+              var code = data[i].userId;
               if(self.members.where({person:code}).length === 0){
                 results.push({
-                  id: code,
-                  text: code + ' ' + data[i].person
+                  id: {userID: code, name: data[i].name},
+                  text: data[i].name
                 });
               }
               
@@ -92,6 +117,9 @@ module.exports = Marionette.ItemView.extend({
             more: i < data.length,
             results: results
           });
+
+        });
+        
       }
     });
 

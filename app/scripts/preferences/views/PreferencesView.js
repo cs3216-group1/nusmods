@@ -1,5 +1,6 @@
 'use strict';
 
+var App = require('../../app');
 var $ = require('jquery');
 var Marionette = require('backbone.marionette');
 var _ = require('underscore');
@@ -132,6 +133,7 @@ module.exports = Marionette.LayoutView.extend({
   },
   cloudLogin: function () {
     sdk.login(function () {
+
       _.each(config.defaultPreferences, function (value, key, list) {
         queryDB.getItemFromDB(preferencesNamespace + key);
       }, this);
@@ -140,11 +142,13 @@ module.exports = Marionette.LayoutView.extend({
         queryDB.getItemFromDB(config.semTimetableFragment(semester) + ':queryString');
       }, this);
       queryDB.getItemFromDB(bookmarkedModulesNamespace);
+      App.request('setLoginStatus', true);
     });
   },
   cloudLogout: function () {
     sdk.logout(function () {
       localforage.clear();
+       App.request('setLoginStatus', false);
     });
   }
 });
