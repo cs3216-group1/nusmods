@@ -13,6 +13,7 @@ var MemberCollection = require('../collections/MemberCollection');
 var TimetableView = require('../views/TimetableView');
 var _ = require('underscore');
 var config = require('../../common/config');
+var queryDB = require('../../common/utils/queryDB');
 
 
 
@@ -44,59 +45,40 @@ module.exports = Marionette.Controller.extend({
   },
 
   showTimetable: function () {
-
     navigationItem.select();
-
     var timetableView = new TimetableView({
       academicYear: academicYear,
       semester: semester,
       gridCollection: this.gridCollection,
       memberCollection:this.memberCollection
     });
-
     App.mainRegion.show(timetableView);
 
-    // Promise.resolve().then(function () {
-    //   if (queryString) {
-    //     var selectedModules = App.request('selectedModules', semester);
-    //     var timetable = selectedModules.timetable;
-    //     timetable.reset();
-    //     var selectedCodes = selectedModules.pluck('ModuleCode');
-    //     var routeModules = TimetableModuleCollection.fromQueryStringToJSON(queryString);
-    //     var routeCodes = _.pluck(routeModules, 'ModuleCode');
-    //     _.each(_.difference(selectedCodes, routeCodes), function (code) {
-    //       selectedModules.remove(selectedModules.get(code));
-    //     });
-    //     return Promise.all(_.map(routeModules, function (module) {
-    //       var selectedModule = selectedModules.get(module.ModuleCode);
-    //       if (selectedModule) {
-    //         var selectedModuleLessons = selectedModule.get('lessons');
-    //         if (selectedModuleLessons) {
-    //           var lessonsByType = selectedModuleLessons.groupBy('LessonType');
-    //           _.each(module.selectedLessons, function (lesson) {
-    //             timetable.add(selectedModuleLessons.where({
-    //               LessonType: lesson.LessonType,
-    //               ClassNo: lesson.ClassNo
-    //             }));
-    //             delete lessonsByType[lesson.LessonType];
-    //           });
-    //           // Add lessons whose type did not exist in data when timetable last saved
-    //           _.each(lessonsByType, function (lessonsOfType) {
-    //             timetable.add(_.sample(lessonsOfType));
-    //           });
-    //         }
-    //       } else {
-    //         return App.request('addModule', semester, module.ModuleCode, module);
-    //       }
-    //     }));
-    //   }
-    // }).then(function () {
-    //   App.mainRegion.show(new TimetableView({
-    //     academicYear: academicYear,
-    //     semester: semester,
-    //     collection: this.collection
-    //   }));
-    // });
+    var self = this;
+    sdk.getLoginStatus(function(response){
+      response = JSON.parse(response);
+      var status = response['status'];
+      if(status === 'connected'){
+        var semTimetableFragment = config.semTimetableFragment(semester);
+        var url = semTimetableFragment + ':queryString';
+
+        queryDB.getItemFromDB(url,function(timetableString){  
+          var searchResults = self.memberCollection.where({person:'You'});
+          if(searchResults.length){
+            //If the current user is already added to the member collection
+            var modelOfYou = searchResults[0];
+            modelOfYou.set('timetableString', timetableString);
+          }else{
+            self.memberCollection.add({person:'You', timetableString:timetableString, display: true});
+          }
+          // self.memberCollection.where.
+          // App.mainRegion.show(timetableView);
+        });
+
+      }else{
+        // App.mainRegion.show(timetableView);
+      }
+    });
   },
 
   _updateGrids: function(){
@@ -107,11 +89,12 @@ module.exports = Marionette.Controller.extend({
 
     this.memberCollection.each(function(member){
       if(member.get('display')){
-        mergingTimetables.push(member);
+        console.log('member');
+        console.log(member);
+
+        mergingTimetables.push({person:member.get('person'),timetableString:member.get('timetableString')});
       }
     })
-
-    // mergingTimetables = App.request('mergingTimetables');
 
     var self = this;
     this._interpretMeringTimetableStrings(mergingTimetables).then(function(mergingTimetable){
@@ -130,11 +113,14 @@ module.exports = Marionette.Controller.extend({
   _interpreteTimetableString: function(person, timetableString){
     var routeModules = TimetableModuleCollection.fromQueryStringToJSON(timetableString);
     var sem = 1;
-    
+
+
     return Promise.all(_.map(routeModules,function(module){
       var module_id = module['ModuleCode'];
+
       return Promise.all([NUSMods.getModIndex(module_id), NUSMods.getTimetable(sem, module_id)])
       .then(function(values){
+
         var module_info = values[0];
         var module_timetable = values[1];
         var timetable = [];
