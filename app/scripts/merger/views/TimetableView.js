@@ -12,6 +12,7 @@ var ShowHideView = require('./ShowHideView');
 var MergerTimetableView = require('./MergerTableView');
 var TipsView = require('./TipsView');
 var _ = require('underscore');
+var LegendsView = require('./LegendsView');
 
 //var UrlSharingView = require('./UrlSharingView');
 var config = require('../../common/config');
@@ -74,7 +75,7 @@ module.exports = Marionette.LayoutView.extend({
     }));
     this.showHideRegion.show(new ShowHideView());
     this.timetableRegion.show(new MergerTimetableView({collection: this.gridCollection}));
-
+    this.legendsRegion.show(new LegendsView());
     var tipsModel = new Backbone.Model({tips: tips});
     // this.tipsRegion.show(new TipsView({model: tipsModel}));
 
