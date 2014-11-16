@@ -27,6 +27,8 @@ module.exports = Marionette.ItemView.extend({
   onSelect2Selecting: function (event) {
     event.preventDefault();
     App.request('addModule', this.semester, event.val);
+    console.log('select new module');
+    console.log(event.val);
     this.ui.input.select2('focus');
   },
 

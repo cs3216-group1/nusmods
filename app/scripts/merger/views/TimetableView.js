@@ -30,7 +30,6 @@ module.exports = Marionette.LayoutView.extend({
     sharedTimetableControlsRegion: '.shared-timetable-controls-region',
     showHideRegion: '.show-hide-region',
     timetableRegion: '#timetable-wrapper',
-   
     urlSharingRegion: '.url-sharing-region'
   },
 

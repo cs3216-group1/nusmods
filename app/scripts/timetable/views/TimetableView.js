@@ -75,7 +75,10 @@ module.exports = Marionette.LayoutView.extend({
   },
 
   modulesChanged: function (model, collection, options) {
+    alert('hey ');
     if (this.selectedModules.length) {
+      alert('modulesChanged');
+      console.log((this.semester) + '?' + this.selectedModules.toQueryString());
       Backbone.history.navigate(config.semTimetableFragment(this.semester) +
         '?' + this.selectedModules.toQueryString(), options);
     } else {
