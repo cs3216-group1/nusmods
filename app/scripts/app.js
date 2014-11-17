@@ -123,8 +123,7 @@ App.reqres.setHandler('deleteBookmark', function (id) {
   });
 });
 
-App.reqres.setHandler('loadUserModules',function(){
-  console.log('loadd');
+App.reqres.setHandler('loadUserModules',function(byPassSharedURLCheck){
   for (var i = 0; i < 5; i++) {
     selectedModulesControllers[i] = new SelectedModulesController({
       semester: i + 1
@@ -140,20 +139,24 @@ App.reqres.setHandler('loadUserModules',function(){
       response = JSON.parse(response);
       var status = response['status'];
 
+      console.log('window.location is ');
+      console.log(window.location);
       if(status === 'connected'){
         return queryDB.getItemFromDB(url,function(savedQueryString){
-          if ('/' + semTimetableFragment === window.location.pathname) {
-            var queryString = window.location.search.slice(1);
-            if (queryString) {
-              if (savedQueryString !== queryString) {
-                // If initial query string does not match saved query string,
-                // timetable is shared.
-                App.request('selectedModules', semester).shared = true;
+          if(byPassSharedURLCheck && byPassSharedURLCheck !== true){
+            if ('/' + semTimetableFragment === window.location.pathname) {
+              var queryString = window.location.search.slice(1);
+              if (queryString) {
+                if (savedQueryString !== queryString) {
+                  // If initial query string does not match saved query string,
+                  // timetable is shared.
+                  App.request('selectedModules', semester).shared = true;
+                }
+                // If there is a query string for timetable, return so that it will
+                // be used instead of saved query string.
+                return;
               }
-              // If there is a query string for timetable, return so that it will
-              // be used instead of saved query string.
-              return;
-            }
+            }      
           }
           var selectedModules = TimetableModuleCollection.fromQueryStringToJSON(savedQueryString);
 
@@ -164,18 +167,20 @@ App.reqres.setHandler('loadUserModules',function(){
       }else{
         return localforage.getItem(semTimetableFragment + ':queryString')
           .then(function (savedQueryString) {
-          if ('/' + semTimetableFragment === window.location.pathname) {
-            var queryString = window.location.search.slice(1);
-            if (queryString) {
-              if (savedQueryString !== queryString) {
-                // If initial query string does not match saved query string,
-                // timetable is shared.
-                App.request('selectedModules', semester).shared = true;
+          if(byPassSharedURLCheck && byPassSharedURLCheck === false){
+            if ('/' + semTimetableFragment === window.location.pathname) {
+              var queryString = window.location.search.slice(1);
+              if (queryString) {
+                if (savedQueryString !== queryString) {
+                  // If initial query string does not match saved query string,
+                  // timetable is shared.
+                  App.request('selectedModules', semester).shared = true;
+                }
+                // If there is a query string for timetable, return so that it will
+                // be used instead of saved query string.
+                return;
               }
-              // If there is a query string for timetable, return so that it will
-              // be used instead of saved query string.
-              return;
-            }
+            }      
           }
           var selectedModules = TimetableModuleCollection.fromQueryStringToJSON(savedQueryString);
 
@@ -217,7 +222,7 @@ App.on('start', function () {
   require('./help');
   require('./support');
 
-  Promise.all(App.request('loadUserModules').concat([NUSMods.generateModuleCodes()])).then(function () {
+  Promise.all(App.request('loadUserModules',false).concat([NUSMods.generateModuleCodes()])).then(function () {
     new AppView();
 
     Backbone.history.start({pushState: true});

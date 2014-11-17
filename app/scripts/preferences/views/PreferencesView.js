@@ -150,14 +150,14 @@ module.exports = Marionette.LayoutView.extend({
       }, this);
       queryDB.getItemFromDB(bookmarkedModulesNamespace);
 
-      Promise.all(App.request('loadUserModules')).then(function () {
+      Promise.all(App.request('loadUserModules',true)).then(function () {
         Backbone.history.navigate('timetable', {trigger: true, replace: true});
       });
     });
   },
   cloudLogout: function () {
     sdk.logout(function () {
-      Promise.all(App.request('loadUserModules')).then(function () {
+      Promise.all(App.request('loadUserModules',true)).then(function () {
         Backbone.history.navigate('timetable', {trigger: true, replace: true});
       });
     });
