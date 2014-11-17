@@ -48,6 +48,10 @@ App.reqres.setHandler('addNavigationItem', function (navigationItem) {
   return navigationCollection.add(navigationItem);
 });
 
+App.reqres.setHandler('removeNavigationItem', function (navigationItem) {
+  navigationCollection.remove(navigationCollection.findWhere({ 'url' : navigationItem}));
+});
+
 NUSMods.setConfig(config);
 
 var selectedModulesControllers = [];
@@ -116,6 +120,7 @@ App.reqres.setHandler('deleteBookmark', function (id) {
 });
 
 App.reqres.setHandler('loadUserModules',function(){
+  console.log('loadd');
   for (var i = 0; i < 5; i++) {
     selectedModulesControllers[i] = new SelectedModulesController({
       semester: i + 1
@@ -198,7 +203,9 @@ App.on('start', function () {
   // require('ivle');
   require('./merger');
   require('./preferences');
-  require('./login');
+
+  var login = require('./login');
+  login();
 
 
   // footer modules

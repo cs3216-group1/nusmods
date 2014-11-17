@@ -10,16 +10,26 @@ var BookmarksView = require('./BookmarksView');
 var _ = require('underscore');
 var analytics = require('../../analytics');
 var attachFastClick = require('fastclick');
+var config = require('../../common/config');
+var queryDB = require('../utils/queryDB');
+var login = require('../../login');
 // var corsify = require('../../cors/corsify');
 var themePicker = require('../themes/themePicker');
 require('bootstrap/alert');
 require('qTip2');
 
+var preferencesNamespace = config.namespaces.preferences + ':';
+var ivleNamespace = config.namespaces.ivle + ':';
+var bookmarkedModulesNamespace = config.namespaces.bookmarkedModules + ':';
+
+
 module.exports = Backbone.View.extend({
   el: 'body',
 
   events: {
-    'click a[href]:not([data-bypass])': 'hijackLinks'
+    'click a[href]:not([data-bypass])': 'hijackLinks',
+    'click a[href="login"]': 'cloudLogin',
+    'click a[href="logout"]': 'cloudLogout'
   },
 
   hijackLinks: function (event) {
@@ -173,5 +183,31 @@ module.exports = Backbone.View.extend({
     setTimeout(function () {
       window.scrollTo(0, 0);
     }, 0);
+  },
+
+  cloudLogin: function () {
+    sdk.login(function () {
+      _.each(config.defaultPreferences, function (value, key, list) {
+        queryDB.getItemFromDB(preferencesNamespace + key);
+      }, this);
+      _.each(_.range(1, 5), function(semester) {
+        queryDB.getItemFromDB(config.semTimetableFragment(semester) + ':skippedLessons');
+        queryDB.getItemFromDB(config.semTimetableFragment(semester) + ':queryString');
+      }, this);
+      queryDB.getItemFromDB(bookmarkedModulesNamespace);
+      Promise.all(App.request('loadUserModules')).then(function () {
+        Backbone.history.navigate('timetable', {trigger: true, replace: true});
+      });
+      login();
+    });
+  },
+
+  cloudLogout: function () {
+    sdk.logout(function () {
+      Promise.all(App.request('loadUserModules')).then(function () {
+        Backbone.history.navigate('timetable', {trigger: true, replace: true});
+      });
+      login();
+    });
   }
 });
