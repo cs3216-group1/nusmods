@@ -198,6 +198,10 @@ kbd {
   }
 }
 
+.dropdown:hover .dropdown-menu {
+  display: block;
+}
+
 // NUSMods Logo
 #brand {
   font-size: 24px;

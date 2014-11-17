@@ -6,11 +6,11 @@ var Marionette = require('backbone.marionette');
 var facultyList = require('../common/faculty/facultyList.json');
 var themeOptions = require('../common/themes/themeOptions.json');
 
-var navigationItem = App.request('addNavigationItem', {
-  name: 'Preferences',
-  icon: 'gear',
-  url: '/preferences'
-});
+// var navigationItem = App.request('addNavigationItem', {
+//   name: 'P',
+//   icon: 'gear',
+//   url: '/preferences'
+// });
 
 var controller = {
   showPreferences: function () {
