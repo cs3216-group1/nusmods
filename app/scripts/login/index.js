@@ -16,14 +16,14 @@ module.exports = function () {
         info = JSON.parse(info);
         navigationItem = App.request('addNavigationItem', {
           name: info.info.name,
-          icon: 'code',
+          icon: 'user',
           url: 'logout'
         });
       });
     } else {
       navigationItem = App.request('addNavigationItem', {
         name: 'Login',
-        icon: 'code',
+        icon: 'paper-plane',
         url: 'login'
       });
     }

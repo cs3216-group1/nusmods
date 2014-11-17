@@ -201,6 +201,19 @@ kbd {
   }
 }
 
+#login-button {
+  background-color: #ff6600;
+  color: white;
+  border-radius: 0.5em;
+  margin-top: 8px;
+  margin-bottom: 3px;
+  padding-top: 7px;
+  padding-bottom: 7px;
+  &:hover {
+    background-color: #cc5200;
+  }
+}
+
 .dropdown:hover {
   background-color: #dddddd;
   .dropdown-menu {

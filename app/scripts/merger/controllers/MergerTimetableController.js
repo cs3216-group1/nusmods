@@ -17,7 +17,7 @@ var queryDB = require('../../common/utils/queryDB');
 
 var navigationItem = App.request('addNavigationItem', {
   name: 'Scheduler',
-  icon: 'users',
+  icon: 'tasks',
   url: '/scheduler'
 });
 
