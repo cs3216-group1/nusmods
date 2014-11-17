@@ -340,6 +340,10 @@ kbd {
   }
 }
 
+.timetable-input {
+  border: 1px solid #ff6600 !important;
+}
+
 .select2-container,
 .select2-container-active {
   .select2-choices {
@@ -349,6 +353,11 @@ kbd {
     &:focus,
     &:active {  
       box-shadow: none !important;
+    }
+  }
+  &.timetable-input {
+    .select2-choices {
+      border-color: transparent;
     }
   }
 }
