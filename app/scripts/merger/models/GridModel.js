@@ -46,7 +46,7 @@ module.exports = Backbone.Model.extend({
 				message: 'Free Slots!'
 			};
 		}else{
-			var message = numOfClash + ' cannot make it';
+			var message = numOfClash + ' is not available';
 
 			var persons = _.map(this.GridInfo,function(value){
 					return _.map(value, function(v,k){
@@ -55,14 +55,14 @@ module.exports = Backbone.Model.extend({
 				},this);
 
 			if(numOfClash === 1){
-				return {message: persons[0] + ' cannot make it'};
+				return {message: persons[0] + ' is not available'};
 				
 			}else if(numOfClash === 2){
-				return {message: persons[0] + ' and ' + persons[1] + ' cannot make it'};
+				return {message: persons[0] + ' and ' + persons[1] + ' are not available'};
 			}else if (numOfClash ===3){
-				return {message: persons[0] + ' and ' + persons[1] + ' and ' + persons[2] + ' cannot make it'}; 
+				return {message: persons[0] + ' and ' + persons[1] + ' and ' + persons[2] + ' are not available'}; 
 			}else{
-				return {message: persons[0] + ' and ' + persons[1] + ' and ' + persons[2] + ' and other' + (persons - 3) + ' cannot make it'}; 
+				return {message: persons[0] + ' and ' + persons[1] + ' and ' + persons[2] + ' and other' + (persons - 3) + ' are not available'}; 
 			}
 
 			// var persons = _.map(this.GridInfo,function(value){
