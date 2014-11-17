@@ -14,8 +14,13 @@ module.exports = Marionette.ItemView.extend({
 
   initialize: function () {
     if (this.model.get('url') === 'logout') {
-     this.template = authTemplate;
-     this.$el.attr('class', 'dropdown');
+      this.template = authTemplate;
+      this.$el.attr('class', 'dropdown');
+      var displayedName = this.model.get('name');
+      if (displayedName.length > 18) {
+        displayedName = displayedName.substring(0,15) + '...';
+      }
+      this.model.set('displayedName', displayedName);
     }
   },
 

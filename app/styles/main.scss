@@ -143,13 +143,15 @@ kbd {
 .navbar-default {
   border: none;
   .navbar-nav > {
-    li {
+    li > {
       a {
         padding-bottom: 12px;
       }
       a:hover {
         background: none;
       }
+    }
+    li {
       &.active > {
         a, a:hover {
           background: none;
@@ -199,8 +201,11 @@ kbd {
   }
 }
 
-.dropdown:hover .dropdown-menu {
-  display: block;
+.dropdown:hover {
+  background-color: #dddddd;
+  .dropdown-menu {
+    display: block;
+  }
 }
 
 // NUSMods Logo
