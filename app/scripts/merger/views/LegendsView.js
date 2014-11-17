@@ -8,7 +8,7 @@ var _ = require('underscore');
 
 module.exports = Marionette.CompositeView.extend({
   tagName: 'table',
-  className: 'table table-bordered',
+  id: '#legends-table',
   childView: MemberView,
   childViewContainer: 'tbody',
   template: template,
