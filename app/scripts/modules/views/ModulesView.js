@@ -20,13 +20,11 @@ module.exports = Marionette.LayoutView.extend({
   regions: {
     modulesRegion: '#content',
     sidebarRegion: '#sidebar',
-    playlistRegion: '#playlist'
   },
 
   ui: {
     content: '#content',
     sidebar: '#sidebar',
-    playlist: '#playlist',
     backToTopButton: '#back-to-top'
   },
 
@@ -181,10 +179,6 @@ module.exports = Marionette.LayoutView.extend({
       }
 
       that.sidebarRegion.show(new FacetsView({
-        collection: facets,
-        threshold: 600
-      }));
-      that.playlistRegion.show(new FacetsView({
         collection: facets,
         threshold: 600
       }));
