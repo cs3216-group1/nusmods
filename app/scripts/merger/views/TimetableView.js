@@ -75,7 +75,7 @@ module.exports = Marionette.LayoutView.extend({
     }));
     this.showHideRegion.show(new ShowHideView());
     this.timetableRegion.show(new MergerTimetableView({collection: this.gridCollection}));
-    // this.legendsRegion.show(new LegendsView());
+    this.legendsRegion.show(new LegendsView());
     var tipsModel = new Backbone.Model({tips: tips});
     // this.tipsRegion.show(new TipsView({model: tipsModel}));
 
