@@ -12,9 +12,11 @@ var themeOptions = require('../common/themes/themeOptions.json');
 //   url: '/preferences'
 // });
 
+
 var controller = {
   showPreferences: function () {
     var PreferencesView = require('./views/PreferencesView');
+    var navigationItem = App.request('findNavigationItem', 'logout');
     navigationItem.select();
     var preferencesModel = new Backbone.Model({
       faculties: facultyList,

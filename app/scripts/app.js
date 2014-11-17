@@ -52,6 +52,10 @@ App.reqres.setHandler('removeNavigationItem', function (navigationItem) {
   navigationCollection.remove(navigationCollection.findWhere({ 'url' : navigationItem}));
 });
 
+App.reqres.setHandler('findNavigationItem', function (navigationItem) {
+  return navigationCollection.findWhere({ 'url' : navigationItem});
+});
+
 NUSMods.setConfig(config);
 
 var selectedModulesControllers = [];

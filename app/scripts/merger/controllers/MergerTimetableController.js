@@ -15,12 +15,8 @@ var _ = require('underscore');
 var config = require('../../common/config');
 var queryDB = require('../../common/utils/queryDB');
 
-
-
-
-
 var navigationItem = App.request('addNavigationItem', {
-  name: 'Merge',
+  name: 'Scheduler',
   icon: 'users',
   url: '/scheduler'
 });
