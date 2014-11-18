@@ -49,7 +49,6 @@ module.exports = Marionette.Controller.extend({
     if (!this.selectedModules.shared) {
       var skippedLessons = this.skippedLessons;
       var url = config.semTimetableFragment(this.semester) + ':skippedLessons';
-      console.log(url);
       queryDB.setItemToDB(url, skippedLessons);
     }
   },
