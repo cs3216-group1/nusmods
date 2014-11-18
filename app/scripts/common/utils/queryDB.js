@@ -37,12 +37,15 @@ module.exports = {
           response = JSON.parse(response);
           var value = response.data;
           if (response.status === 'absent') {
-            return;
+            if (callback) {
+              callback();
+            }
+          } else {
+            if (callback) {
+              callback(value);
+            }
           }
-          if (callback) {
-            callback(value);
-            return;
-          }
+          return;
           
         });
       } else {
@@ -73,7 +76,6 @@ module.exports = {
     }
 
     sdk.get(baseURL,function(response){
-      //console.log(response);
       response = JSON.parse(response);
       callback(response['data']);
     });

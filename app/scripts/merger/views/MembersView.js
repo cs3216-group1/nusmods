@@ -30,24 +30,20 @@ module.exports = Marionette.CompositeView.extend({
   },
   childEvents: {
     'remove:member': function(event){
-      console.log("child events triggered");
       var person = $($(event.$el[0]).children()[1]).html();
       var modelToDelete = this.collection.where({person:person});
       this.collection.remove(modelToDelete);
     },
     'toggle:display': function(event){
-      console.log("toggle display");
       var person = $($(event.$el[0]).children()[1]).html();    
       var memberModel = this.collection.where({person:person})[0];
       var newDisplay = !memberModel.get('display');
       memberModel.set('display',newDisplay);
-      console.log(memberModel);
     }
   },
 
   initialize: function(){
     this.on('childView:removeMember',function(childView,msg){
-      console.log('jhahahahahah');
     });
   }
 });

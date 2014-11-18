@@ -55,8 +55,6 @@ module.exports = Marionette.LayoutView.extend({
     'change @ui.faculty, @ui.student, @ui.mode, @ui.theme': 'updatePreference',
     'keydown': 'toggleTheme',
     'click .connect-ivle': 'connectIvle',
-    'click .login-button': 'cloudLogin',
-    'click .logout-button': 'cloudLogout'
   },
   connectIvle: function () {
     var that = this;
@@ -139,27 +137,4 @@ module.exports = Marionette.LayoutView.extend({
       themePicker.toggleMode();
     }
   },
-  cloudLogin: function () {
-    sdk.login(function () {
-      _.each(config.defaultPreferences, function (value, key, list) {
-        queryDB.getItemFromDB(preferencesNamespace + key);
-      }, this);
-      _.each(_.range(1, 5), function(semester) {
-        queryDB.getItemFromDB(config.semTimetableFragment(semester) + ':skippedLessons');
-        queryDB.getItemFromDB(config.semTimetableFragment(semester) + ':queryString');
-      }, this);
-      queryDB.getItemFromDB(bookmarkedModulesNamespace);
-
-      Promise.all(App.request('loadUserModules',true)).then(function () {
-        Backbone.history.navigate('timetable', {trigger: true, replace: true});
-      });
-    });
-  },
-  cloudLogout: function () {
-    sdk.logout(function () {
-      Promise.all(App.request('loadUserModules',true)).then(function () {
-        Backbone.history.navigate('timetable', {trigger: true, replace: true});
-      });
-    });
-  }
 });

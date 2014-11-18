@@ -32,13 +32,10 @@ module.exports = Marionette.CompositeView.extend({
   },
 
   initialize: function(){
-    console.log('initialize table View');
-    console.log(this.$el);
 
     // this.$el.popover({
     //     html: true,
     //     content: function(){
-    //       console.log('pop over hahahahaa');
     //       return AddEventModal();
     //     }
     //   });
@@ -50,9 +47,6 @@ module.exports = Marionette.CompositeView.extend({
 
 
 
-      console.log(self.$('#mon'));
-      console.log(tbodyID);
-      console.log(tdID);
       // self.$("#mon").popover({ 
       //     title: 'some title',
       //     content: 'helo world' ,
@@ -62,7 +56,6 @@ module.exports = Marionette.CompositeView.extend({
       // self.$el.popover({
       //   html: true,
       //   content: function(){
-      //     console.log('pop over hahahahaa');
       //     return AddEventModal();
       //   }
       // });

@@ -49,6 +49,7 @@ module.exports = Marionette.Controller.extend({
     if (!this.selectedModules.shared) {
       var skippedLessons = this.skippedLessons;
       var url = config.semTimetableFragment(this.semester) + ':skippedLessons';
+      console.log(url);
       queryDB.setItemToDB(url, skippedLessons);
     }
   },
@@ -63,7 +64,15 @@ module.exports = Marionette.Controller.extend({
   getSkippedLessons: function () {
     var thisSemester = this.semester;
     var skippedLessons = this.skippedLessons;
-    return localforage.getItem(config.semTimetableFragment(thisSemester) + ':skippedLessons').then(function (str) {
+    var x = new Promise(function (fulfill, reject) {
+      queryDB.getItemFromDB(config.semTimetableFragment(thisSemester) + ':skippedLessons', function (res) {
+        if (fulfill) {
+          fulfill(res);
+        }
+      });
+    });
+    
+    return x.then(function (str) {
       if (str) {
         var collection = qs.parse(str);
         _.each(collection, function (lesson) {

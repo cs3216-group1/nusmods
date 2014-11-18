@@ -13,7 +13,6 @@ var controller = {
   showChatroom: function () {
     var ChatroomView = require('./views/ChatroomView');
     navigationItem.select();
-    console.log('inside chatroom');
     App.mainRegion.show(new ChatroomView());
   }
 };

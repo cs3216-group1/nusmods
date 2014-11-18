@@ -17,7 +17,7 @@ var queryDB = require('../../common/utils/queryDB');
 
 var navigationItem = App.request('addNavigationItem', {
   name: 'Scheduler',
-  icon: 'users',
+  icon: 'tasks',
   url: '/scheduler'
 });
 
@@ -29,7 +29,6 @@ var queryString = 'ACC2002[LEC]=B2&ACC2002[TUT]=B03&MA1101R[LAB]=B07&MA1101R[LEC
 
 module.exports = Marionette.Controller.extend({
   // showTimetable: function(){
-  //   console.log("show timetable");
   //   App.mainRegion.show(new TimetableView({}));
   // }
   initialize: function(){
@@ -78,16 +77,12 @@ module.exports = Marionette.Controller.extend({
   },
 
   _updateGrids: function(){
-    console.log("_updateGrids");
     this.gridCollection.emptyGrids();
     var mergingTimetables = [];
         
 
     this.memberCollection.each(function(member){
       if(member.get('display')){
-        console.log('member');
-        console.log(member);
-
         mergingTimetables.push({person:member.get('person'),timetableString:member.get('timetableString')});
       }
     })
