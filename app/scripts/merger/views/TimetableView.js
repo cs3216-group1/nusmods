@@ -49,12 +49,12 @@ module.exports = Marionette.LayoutView.extend({
     this.listenTo(this.timetable, 'change', this.modulesChanged);
 
     this.membersRegion.show(new MembersView({collection: this.memberCollection}));
-    this.exportRegion.show(new ExportView({
-      academicYear: this.academicYear,
-      collection: this.selectedModules,
-      exams: this.selectedModules.exams,
-      semester: this.semester
-    }));
+    // this.exportRegion.show(new ExportView({
+    //   academicYear: this.academicYear,
+    //   collection: this.selectedModules,
+    //   exams: this.selectedModules.exams,
+    //   semester: this.semester
+    // }));
 
     var selectView = new SelectView({
       semester: this.semester,

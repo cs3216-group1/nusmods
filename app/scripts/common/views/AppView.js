@@ -187,20 +187,75 @@ module.exports = Backbone.View.extend({
 
   cloudLogin: function () {
     sdk.login(function () {
-      _.each(config.defaultPreferences, function (value, key, list) {
-        queryDB.getItemFromDB(preferencesNamespace + key);
-      }, this);
-      _.each(_.range(1, 5), function(semester) {
-        queryDB.getItemFromDB(config.semTimetableFragment(semester) + ':skippedLessons');
-        queryDB.getItemFromDB(config.semTimetableFragment(semester) + ':queryString');
-      }, this);
-      queryDB.getItemFromDB(bookmarkedModulesNamespace);
+      var navigateAway = function () {
+        window.location.search = '';
+        Promise.all(App.request('loadUserModules',true)).then(function () {
+          Backbone.history.navigate('timetable', {trigger: true, replace: true});
+        });
+        login();
+      };
+      
+      var getLessonType = function (fullLessonType) {  
+        var lessonTypeCode = fullLessonType.substr(0, 3);
+        if (fullLessonType === "TUTORIAL TYPE 2") {
+          lessonTypeCode="TUT2"; 
+        } else if (fullLessonType === "TUTORIAL TYPE 3") {
+          lessonTypeCode="TUT3"; 
+        } else if (fullLessonType === "DESIGN LECTURE") {
+          lessonTypeCode="DLEC"; 
+        } else if (fullLessonType === "PACKAGED LECTURE") {
+          lessonTypeCode="PLEC"; 
+        } else if (fullLessonType === "PACKAGED TUTORIAL") {
+          lessonTypeCode="PTUT"; 
+        }
+        return lessonTypeCode;
+      };
 
-      window.location.search = '';
-      Promise.all(App.request('loadUserModules',true)).then(function () {
-        Backbone.history.navigate('timetable', {trigger: true, replace: true});
+      var generateNusmodsLink = function (timetable_json, callback) {
+        var lesson = {};
+        var result = '';
+        console.log('----------------------------------------');
+        for (var i = 0; i < timetable_json.length; ++i) {
+          if (timetable_json[i].hasOwnProperty('ModuleCode') && 
+              timetable_json[i].hasOwnProperty('LessonType') && 
+              timetable_json[i].hasOwnProperty('ClassNo')) {   
+            var lessonTypeCode = getLessonType(timetable_json[i].LessonType.toUpperCase());
+            var x = timetable_json[i].ModuleCode + lessonTypeCode;
+            var y = timetable_json[i].ModuleCode + '[' + lessonTypeCode + ']=' + timetable_json[i].ClassNo + '&';
+            lesson[x] = y;
+          } else {
+            callback(true);
+            return;
+          }
+        }
+        for (var key in lesson) {
+          result = result.concat(lesson[key]);
+        }
+        result = result.substr(0, result.length - 1);
+        callback(false, result);
+      };
+
+      queryDB.getItemFromDB(bookmarkedModulesNamespace);
+      queryDB.getItemFromDB(preferencesNamespace + 'firstTimeLogin', function (response) {
+        if (response) {
+          navigateAway();
+        } else {
+          var url = '/ivle/Timetable_Student?AcadYear=' + config.academicYear + '&Semester=' + config.semester;
+          console.log(url);
+          sdk.get(url, function (ivleRes) {
+            ivleRes = JSON.parse(ivleRes).ivleResponse.Results;
+            generateNusmodsLink(ivleRes, function (err, result) {
+              var key = config.semTimetableFragment(config.semester) + ':queryString';
+              queryDB.setItemToDB(key, result, function () {
+                console.log('first time login');
+                queryDB.setItemToDB(preferencesNamespace + 'firstTimeLogin', true);
+                navigateAway();
+              });
+            });
+          });
+        }
       });
-      login();
+
     });
   },
 
