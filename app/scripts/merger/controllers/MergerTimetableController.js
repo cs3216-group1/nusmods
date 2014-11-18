@@ -60,29 +60,26 @@ module.exports = Marionette.Controller.extend({
         var timetableURL = semTimetableFragment + ':queryString';
 
         queryDB.getItemFromDB(timetableURL,function(timetableString){
-
           var skippedLessonsURL = semTimetableFragment + ':skippedLessons';
 
-          queryDB.getItemFromDB(skippedLessonsURL,function(skippedLessons){
-            var searchResults = self.memberCollection.where({person:'You'});
-
-            if(searchResults.length){
-              //If the current user is already added to the member collection
-              var modelOfYou = searchResults[0];
-              modelOfYou.set('timetableString', timetableString);
-              modelOfYou.set('skippedLessons', skippedLessons);
-            }else{
-              console.log('skippedLessons');
-              console.log(skippedLessons)
-              self.memberCollection.add({person:'You', timetableString:timetableString, skippedLessons: skippedLessons, display: true});
-            }
-          })
-          // self.memberCollection.where.
-          // App.mainRegion.show(timetableView);
+          sdk.get('/me/userinfo', function (info) {
+            var yourName = JSON.parse(info).info.name;
+            queryDB.getItemFromDB(skippedLessonsURL,function(skippedLessons){
+              var searchResults = self.memberCollection.where({person: yourName + ' (You)'});
+              if(searchResults.length){
+                //If the current user is already added to the member collection
+                var modelOfYou = searchResults[0];
+                modelOfYou.set('timetableString', timetableString);
+                modelOfYou.set('skippedLessons', skippedLessons);
+              }else{
+                self.memberCollection.add({person: yourName + ' (You)', timetableString:timetableString, skippedLessons: skippedLessons, display: true});
+              }
+            })
+          });
         });
 
       }else{
-        // App.mainRegion.show(timetableView);
+        
       }
     });
   },
