@@ -27,7 +27,6 @@ var EventView = Marionette.ItemView.extend({
   },
 
   initialize: function(options) {
-    console.log('initialize event view');
     this.options = options;
 
     _.bindAll(this, 'drop', 'out', 'over', 'revert', 'start', 'skip');
@@ -35,7 +34,6 @@ var EventView = Marionette.ItemView.extend({
   },
 
   onRender: function() {
-    console.log('onRender event view');
     this.$el.addClass('color' + this.model.get('color'));
     this.$el.qtip({
       content: this.tooltipTemplate(this.model.toJSON()),
@@ -81,7 +79,6 @@ var EventView = Marionette.ItemView.extend({
   },
 
   attach: function() {
-    console.log('eventview attach');
     this.$el.dblclick(this.skip);
     if (this.model.get('skipped')) {
       this.$el.fadeTo('slow', 0.2);
@@ -108,7 +105,6 @@ var EventView = Marionette.ItemView.extend({
         // 0000 EndTime has never been seen but just in case.
         if (tdAfterEnd.length || endTime === '0000') {
           this.detached = tdStart.nextUntil(tdAfterEnd, 'td:empty');
-          console.log(this.detached);
           if (this.detached.length === this.model.get('Duration') - 1) {
             tdStart.attr('colspan', this.model.get('Duration')).html(this.$el);
             this.detached.detach();

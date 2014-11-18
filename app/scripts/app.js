@@ -135,12 +135,8 @@ App.reqres.setHandler('loadUserModules',function(byPassSharedURLCheck){
     var url = semTimetableFragment + ':queryString';
 
     sdk.getLoginStatus(function(response){
-      console.log(response);
       response = JSON.parse(response);
       var status = response['status'];
-
-      console.log('window.location is ');
-      console.log(window.location);
       if(status === 'connected'){
         return queryDB.getItemFromDB(url,function(savedQueryString){
           if(byPassSharedURLCheck && byPassSharedURLCheck !== true){

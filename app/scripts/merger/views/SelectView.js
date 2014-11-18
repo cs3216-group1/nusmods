@@ -56,14 +56,12 @@ module.exports = Marionette.ItemView.extend({
     this.semester = options.semester;
     this.members = options.members;
 
-    console.log("merger select view init");
     queryDB;
   },
 
   onSelect2Selecting: function (event) {
     event.preventDefault();
 
-    console.log(event.val);
     var userID = event.val.userID;
     var name = event.val.name;
     var semTimetableFragment = config.semTimetableFragment(this.semester);

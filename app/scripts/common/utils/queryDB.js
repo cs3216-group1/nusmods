@@ -73,7 +73,6 @@ module.exports = {
     }
 
     sdk.get(baseURL,function(response){
-      //console.log(response);
       response = JSON.parse(response);
       callback(response['data']);
     });

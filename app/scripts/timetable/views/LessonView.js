@@ -83,10 +83,6 @@ var LessonView = Marionette.ItemView.extend({
 
   attach: function() {
     var self = this;
-    this.$el.dblclick(function(e){
-      self.skip();
-      e.stopPropagation();
-    });
     if (this.model.get('skipped')) {
       this.$el.fadeTo('slow', 0.2);
     }

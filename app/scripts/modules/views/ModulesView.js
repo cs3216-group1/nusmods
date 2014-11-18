@@ -139,7 +139,6 @@ module.exports = Marionette.LayoutView.extend({
         slug: slugify(label)
       };
     }));
-    console.log(facets);
     facets.add({
       filteredCollection: mods,
       key: 'ModuleCredit',
