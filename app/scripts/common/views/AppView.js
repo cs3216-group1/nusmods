@@ -13,6 +13,7 @@ var attachFastClick = require('fastclick');
 var config = require('../../common/config');
 var queryDB = require('../utils/queryDB');
 var login = require('../../login');
+var ivleTool = require('../utils/ivleTool');
 // var corsify = require('../../cors/corsify');
 var themePicker = require('../themes/themePicker');
 require('bootstrap/alert');
@@ -29,7 +30,8 @@ module.exports = Backbone.View.extend({
   events: {
     'click a[href]:not([data-bypass])': 'hijackLinks',
     'click a[href="login"]': 'cloudLogin',
-    'click a[href="logout"]': 'cloudLogout'
+    'click a[href="logout"]': 'cloudLogout',
+    'click a[href="sync"]': 'syncWithIvle'
   },
 
   hijackLinks: function (event) {
@@ -185,74 +187,37 @@ module.exports = Backbone.View.extend({
     }, 0);
   },
 
-  cloudLogin: function () {
-    sdk.login(function () {
-      var navigateAway = function () {
-        window.location.search = '';
-        Promise.all(App.request('loadUserModules',true)).then(function () {
-          Backbone.history.navigate('timetable', {trigger: true, replace: true});
+  navigateAway: function () {
+    window.location.search = '';
+    Promise.all(App.request('loadUserModules',true)).then(function () {
+      Backbone.history.navigate('timetable', {trigger: true, replace: true});
+    });
+  },
+
+  syncWithIvle: function (event) {
+    var that = this;
+    var url = '/ivle/Timetable_Student?AcadYear=' + config.academicYear + '&Semester=' + config.semester;
+    sdk.get(url, function (ivleRes) {
+      ivleRes = JSON.parse(ivleRes).ivleResponse.Results;
+      ivleTool.generateNusmodsLink(ivleRes, function (err, result) {
+        var key = config.semTimetableFragment(config.semester) + ':queryString';
+        queryDB.setItemToDB(key, result, function () {
+          that.navigateAway();
         });
-        login();
-      };
-      
-      var getLessonType = function (fullLessonType) {  
-        var lessonTypeCode = fullLessonType.substr(0, 3);
-        if (fullLessonType === "TUTORIAL TYPE 2") {
-          lessonTypeCode="TUT2"; 
-        } else if (fullLessonType === "TUTORIAL TYPE 3") {
-          lessonTypeCode="TUT3"; 
-        } else if (fullLessonType === "DESIGN LECTURE") {
-          lessonTypeCode="DLEC"; 
-        } else if (fullLessonType === "PACKAGED LECTURE") {
-          lessonTypeCode="PLEC"; 
-        } else if (fullLessonType === "PACKAGED TUTORIAL") {
-          lessonTypeCode="PTUT"; 
-        }
-        return lessonTypeCode;
-      };
+      });
+    });
+  },
 
-      var generateNusmodsLink = function (timetable_json, callback) {
-        var lesson = {};
-        var result = '';
-        console.log('----------------------------------------');
-        for (var i = 0; i < timetable_json.length; ++i) {
-          if (timetable_json[i].hasOwnProperty('ModuleCode') && 
-              timetable_json[i].hasOwnProperty('LessonType') && 
-              timetable_json[i].hasOwnProperty('ClassNo')) {   
-            var lessonTypeCode = getLessonType(timetable_json[i].LessonType.toUpperCase());
-            var x = timetable_json[i].ModuleCode + lessonTypeCode;
-            var y = timetable_json[i].ModuleCode + '[' + lessonTypeCode + ']=' + timetable_json[i].ClassNo + '&';
-            lesson[x] = y;
-          } else {
-            callback(true);
-            return;
-          }
-        }
-        for (var key in lesson) {
-          result = result.concat(lesson[key]);
-        }
-        result = result.substr(0, result.length - 1);
-        callback(false, result);
-      };
-
+  cloudLogin: function () {
+    var that = this;
+    sdk.login(function () {
       queryDB.getItemFromDB(bookmarkedModulesNamespace);
-      queryDB.getItemFromDB(preferencesNamespace + 'firstTimeLogin', function (response) {
+      queryDB.getItemFromDB(preferencesNamespace + 'notNewUser', function (response) {
         if (response) {
-          navigateAway();
+          that.navigateAway();
         } else {
-          var url = '/ivle/Timetable_Student?AcadYear=' + config.academicYear + '&Semester=' + config.semester;
-          console.log(url);
-          sdk.get(url, function (ivleRes) {
-            ivleRes = JSON.parse(ivleRes).ivleResponse.Results;
-            generateNusmodsLink(ivleRes, function (err, result) {
-              var key = config.semTimetableFragment(config.semester) + ':queryString';
-              queryDB.setItemToDB(key, result, function () {
-                console.log('first time login');
-                queryDB.setItemToDB(preferencesNamespace + 'firstTimeLogin', true);
-                navigateAway();
-              });
-            });
-          });
+          queryDB.setItemToDB(preferencesNamespace + 'notNewUser', true);
+          that.syncWithIvle(false);
         }
       });
 
@@ -260,10 +225,10 @@ module.exports = Backbone.View.extend({
   },
 
   cloudLogout: function () {
+    // queryDB.setItemToDB(preferencesNamespace + 'notNewUser', false);
+    var that = this;
     sdk.logout(function () {
-      Promise.all(App.request('loadUserModules',true)).then(function () {
-        Backbone.history.navigate('timetable', {trigger: true, replace: true});
-      });
+      that.navigateAway();
       login();
     });
   }
