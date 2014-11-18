@@ -3,7 +3,7 @@
 var App = require('../../app');
 var Backbone = require('backbone');
 var MembersView = require('./MembersView');
-var ExportView = require('./ExportView');
+// var ExportView = require('./ExportView');
 var Marionette = require('backbone.marionette');
 var SelectView = require('./SelectView');
 var SemesterSelectorView = require('./SemesterSelectorView');
@@ -23,9 +23,9 @@ module.exports = Marionette.LayoutView.extend({
   template: template,
 
   regions: {
-    membersRegion: '#exam-timetable',
+    membersRegion: '#members-table',
     legendsRegion: '#merger-legends',
-    exportRegion: '.export-region',
+    // exportRegion: '.export-region',
     selectRegion: '.select-region',
     semesterSelectorRegion: '.semester-selector-region',
     sharedTimetableControlsRegion: '.shared-timetable-controls-region',

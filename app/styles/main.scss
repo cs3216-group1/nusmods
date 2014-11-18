@@ -658,6 +658,33 @@ colgroup.hover {
     text-align: center;
   }
 }
+#members-table > table {
+  font-weight: bold;
+  border: 1px solid $gray;
+  th, td {
+    &:first-child {
+      padding-left: 15px;
+    }
+  }
+  th {
+    border: 1px solid $gray;
+    background-color: $gray-lighter;
+  }
+  td {
+    border: 1px solid $gray;
+  }
+  tr {
+    &.clash {
+      background-color: $gray-lighter;
+    }
+    &:hover td {
+      background-color: transparent;
+    }
+  }
+  td.empty-timetable {
+    text-align: center;
+  }
+}
 .clash {
   color: red !important;
 }

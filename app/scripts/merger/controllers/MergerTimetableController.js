@@ -57,17 +57,20 @@ module.exports = Marionette.Controller.extend({
         var semTimetableFragment = config.semTimetableFragment(semester);
         var url = semTimetableFragment + ':queryString';
 
-        queryDB.getItemFromDB(url,function(timetableString){  
-          var searchResults = self.memberCollection.where({person:'You'});
-          if(searchResults.length){
-            //If the current user is already added to the member collection
-            var modelOfYou = searchResults[0];
-            modelOfYou.set('timetableString', timetableString);
-          }else{
-            self.memberCollection.add({person:'You', timetableString:timetableString, display: true});
-          }
-          // self.memberCollection.where.
-          // App.mainRegion.show(timetableView);
+        sdk.get('/me/userinfo', function (info) {
+          var yourName = JSON.parse(info).info.name;
+          queryDB.getItemFromDB(url,function(timetableString){  
+            var searchResults = self.memberCollection.where({person: yourName + ' (You)'});
+            if(searchResults.length){
+              //If the current user is already added to the member collection
+              var modelOfYou = searchResults[0];
+              modelOfYou.set('timetableString', timetableString);
+            }else{
+              self.memberCollection.add({person: yourName + ' (You)', timetableString:timetableString, display: true});
+            }
+            // self.memberCollection.where.
+            // App.mainRegion.show(timetableView);
+          });
         });
 
       }else{
