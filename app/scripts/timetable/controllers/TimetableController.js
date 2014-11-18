@@ -26,8 +26,6 @@ module.exports = Marionette.Controller.extend({
           replace: true
         });
     }
-
-
     academicYear = academicYear.replace('-', '/');
     navigationItem.select();
     Promise.resolve().then(function () {

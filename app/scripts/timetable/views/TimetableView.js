@@ -16,9 +16,7 @@ var UrlSharingView = require('./UrlSharingView');
 var config = require('../../common/config');
 var template = require('../templates/timetable.hbs');
 var tips = require('../tips.json');
-
-require('bootstrap/tooltip');
-require('bootstrap/popover');
+var addModal = require('../templates/modal.hbs');
 
 module.exports = Marionette.LayoutView.extend({
   template: template,
@@ -41,9 +39,6 @@ module.exports = Marionette.LayoutView.extend({
   },
 
   onShow: function() {
-        // this.$el.popover({html:true,content: 'hey hey'});
-        console.log('on show');
-        console.log(this.$el.popover);
     this.selectedModules = App.request('selectedModules', this.semester);
     this.timetable = this.selectedModules.timetable;
     this.skippedLessons = this.selectedModules.skippedLessons;

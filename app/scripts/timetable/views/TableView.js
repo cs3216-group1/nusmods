@@ -32,33 +32,10 @@ module.exports = Marionette.CompositeView.extend({
   },
 
   initialize: function(){
-
-    // this.$el.popover({
-    //     html: true,
-    //     content: function(){
-    //       return AddEventModal();
-    //     }
-    //   });
-
     this.$el.on('dblclick','tbody tr td',function(element){
 
       var tbodyID = $(this.parentElement.parentElement).attr('id');
       var tdID = $(this).attr('class');
-
-
-
-      // self.$("#mon").popover({ 
-      //     title: 'some title',
-      //     content: 'helo world' ,
-      //     trigger: 'hover' // show up on hover default is 'click'
-      // });
-
-      // self.$el.popover({
-      //   html: true,
-      //   content: function(){
-      //     return AddEventModal();
-      //   }
-      // });
     });
   },
 

@@ -13,10 +13,13 @@ var attachFastClick = require('fastclick');
 var config = require('../../common/config');
 var queryDB = require('../utils/queryDB');
 var login = require('../../login');
+var modal = require('../templates/modal.hbs');
+
 // var corsify = require('../../cors/corsify');
 var themePicker = require('../themes/themePicker');
 require('bootstrap/alert');
 require('qTip2');
+require('../jquery.spotlight.js');
 
 var preferencesNamespace = config.namespaces.preferences + ':';
 var ivleNamespace = config.namespaces.ivle + ':';

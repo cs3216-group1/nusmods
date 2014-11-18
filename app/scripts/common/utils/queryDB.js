@@ -8,7 +8,7 @@ module.exports = {
     sdk.getLoginStatus(function(response) {
       response = JSON.parse(response);
       var status = response['status'];
-      if(status == 'connected'){
+      if(status === 'connected'){
         sdk.post('me/app/' + key, { 'data': value }, function (response) {
           if (callback) {
             callback(response);

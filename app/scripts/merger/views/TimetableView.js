@@ -1,5 +1,6 @@
 'use strict';
 
+var $ = require('jquery');
 var App = require('../../app');
 var Backbone = require('backbone');
 var MembersView = require('./MembersView');
@@ -7,7 +8,7 @@ var ExportView = require('./ExportView');
 var Marionette = require('backbone.marionette');
 var SelectView = require('./SelectView');
 var SemesterSelectorView = require('./SemesterSelectorView');
-//var SharedTimetableControlsView = require('./SharedTimetableControlsView');
+var LoginReminderView = require('./LoginReminderView');
 var ShowHideView = require('./ShowHideView');
 var MergerTimetableView = require('./MergerTableView');
 var TipsView = require('./TipsView');
@@ -18,6 +19,7 @@ var LegendsView = require('./LegendsView');
 var config = require('../../common/config');
 var template = require('../templates/timetable.hbs');
 var tips = require('../tips.json');
+var addModal = require('../templates/modal.hbs');
 
 module.exports = Marionette.LayoutView.extend({
   template: template,
@@ -28,7 +30,7 @@ module.exports = Marionette.LayoutView.extend({
     exportRegion: '.export-region',
     selectRegion: '.select-region',
     semesterSelectorRegion: '.semester-selector-region',
-    sharedTimetableControlsRegion: '.shared-timetable-controls-region',
+    LoginRemindRegion: '.login-reminder-region',
     showHideRegion: '.show-hide-region',
     timetableRegion: '#timetable-wrapper',
     urlSharingRegion: '.url-sharing-region'
@@ -65,10 +67,15 @@ module.exports = Marionette.LayoutView.extend({
       this.memberCollection.add(_.extend(value,{display: true}));
     },this);
     this.selectRegion.show(selectView);
-    // if (this.selectedModules.shared) {
-    //   this.sharedTimetableControlsRegion.show(new SharedTimetableControlsView({
-    //     collection: this.selectedModules
-    //   }));
+
+    var self = this;
+    sdk.getLoginStatus(function(response){
+      response = JSON.parse(response);
+      var status = response['status'];
+      if(status !== 'connected'){
+        self.LoginRemindRegion.show(new LoginReminderView());
+      }
+    })
     // }
     this.semesterSelectorRegion.show(new SemesterSelectorView({
       semester: this.semester
@@ -87,7 +94,6 @@ module.exports = Marionette.LayoutView.extend({
     // this.legendsRegion.show('slow/400/fast', function() {
       
     // });
-
   },
 
   modulesChanged: function (model, collection, options) {
