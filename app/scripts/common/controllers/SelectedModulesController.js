@@ -65,9 +65,7 @@ module.exports = Marionette.Controller.extend({
     var skippedLessons = this.skippedLessons;
     var x = new Promise(function (fulfill, reject) {
       queryDB.getItemFromDB(config.semTimetableFragment(thisSemester) + ':skippedLessons', function (res) {
-        if (fulfill) {
-          fulfill(res);
-        }
+        fulfill(res);
       });
     });
     
