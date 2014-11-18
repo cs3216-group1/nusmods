@@ -37,6 +37,9 @@ module.exports = Marionette.LayoutView.extend({
   },
 
   onShow: function() {
+        // this.$el.popover({html:true,content: 'hey hey'});
+        console.log('on show');
+        console.log(this.$el.popover);
     this.selectedModules = App.request('selectedModules', this.semester);
     this.timetable = this.selectedModules.timetable;
     this.skippedLessons = this.selectedModules.skippedLessons;

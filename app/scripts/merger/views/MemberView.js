@@ -25,7 +25,8 @@ module.exports = Marionette.ItemView.extend({
   },
 
   onRender: function () {
-    this.$el.addClass('color' + this.model.get('color'))
-      .toggleClass('clash', this.model.get('clash'));
+    this.$el.addClass('color' + this.model.get('color'));
+    console.log(this.$el);
+    console.log(this.model);
   }
 });

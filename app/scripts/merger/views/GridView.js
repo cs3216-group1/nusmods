@@ -136,7 +136,8 @@ var GridView = Marionette.ItemView.extend({
       this.currentClashColor = nextClashColor;
     }
     this.$el.addClass(nextClashColor);
-
+    console.log('GridModelChanged');
+    console.log(this.model.toJSON());
     this.$el.qtip({
       content: this.tooltipTemplate(this.model.toJSON()),
       position: {
