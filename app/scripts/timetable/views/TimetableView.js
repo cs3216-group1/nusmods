@@ -1,5 +1,6 @@
 'use strict';
 
+var $ = require('jquery');
 var App = require('../../app');
 var Backbone = require('backbone');
 var ExamsView = require('./ExamsView');
@@ -15,6 +16,9 @@ var UrlSharingView = require('./UrlSharingView');
 var config = require('../../common/config');
 var template = require('../templates/timetable.hbs');
 var tips = require('../tips.json');
+
+require('bootstrap/tooltip');
+require('bootstrap/popover');
 
 module.exports = Marionette.LayoutView.extend({
   template: template,

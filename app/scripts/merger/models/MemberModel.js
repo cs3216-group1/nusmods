@@ -6,6 +6,7 @@ module.exports = Backbone.Model.extend({
   initialize: function () {
   	this.person = this.get("person");
   	this.timetableString = this.get("timetableString");
-  	this.display = this.get("display");  
+  	this.display = this.get("display");
+  	this.skippedLessons = this.get("skippedLessons");
   }
 });

@@ -14,33 +14,6 @@ var config = require('../../common/config');
 
 require('select2');
 
-var data = [
-            {
-              person:'wenbo',
-              timetableString:'ACC2002[LEC]=B2&ACC2002[TUT]=B03&MA1101R[LAB]=B07&MA1101R[LEC]=SL1&MA1101R[TUT]=T06&CS5237[LEC]=1'
-            },
-            {
-              person:'siyue',
-              timetableString: 'ACC1002X[LEC]=X3&ACC1002X[TUT]=X16&ACC3603[SEC]=C1&MA1104[LEC]=SL1&MA1104[TUT]=T03'
-            },
-            {
-              person:'dat',
-              timetableString: 'CS2101[SEC]=3&CS2103T[TUT]=T3&CS5234[LEC]=1&ST2334[LEC]=SL1&ST2334[TUT]=T4&GEM2900[LEC]=SL1&CS3216[LEC]=1&CS3216[TUT]=2'
-            },
-            {
-              person:'jishnu',
-              timetableString: 'FMA1201L[SEM]=1&CS3216[LEC]=1&CS3216[TUT]=1'
-            }
-          ];
-
-var mtimetable = {
-  wenbo: 'ACC2002[LEC]=B2&ACC2002[TUT]=B03&MA1101R[LAB]=B07&MA1101R[LEC]=SL1&MA1101R[TUT]=T06&CS5237[LEC]=1',
-  siyue: 'ACC1002X[LEC]=X3&ACC1002X[TUT]=X16&ACC3603[SEC]=C1&MA1104[LEC]=SL1&MA1104[TUT]=T03',
-  dat: 'CS2101[SEC]=3&CS2103T[TUT]=T3&CS5234[LEC]=1&ST2334[LEC]=SL1&ST2334[TUT]=T4&GEM2900[LEC]=SL1&CS3216[LEC]=1&CS3216[TUT]=2',
-  jishnu: 'FMA1201L[SEM]=1&CS3216[LEC]=1&CS3216[TUT]=1'
-}
-
-
 module.exports = Marionette.ItemView.extend({
   template: template,
 
@@ -55,8 +28,6 @@ module.exports = Marionette.ItemView.extend({
   initialize: function (options) {
     this.semester = options.semester;
     this.members = options.members;
-
-    queryDB;
   },
 
   onSelect2Selecting: function (event) {
@@ -65,11 +36,19 @@ module.exports = Marionette.ItemView.extend({
     var userID = event.val.userID;
     var name = event.val.name;
     var semTimetableFragment = config.semTimetableFragment(this.semester);
-    var url = semTimetableFragment + ':queryString';
+    var timetableURL = semTimetableFragment + ':queryString';
 
     var self = this;
-    queryDB.getUserInfoFromDB(userID,url,function(timetableString){  
-      self.trigger('superview:addMember',{person:name,timetableString:timetableString});
+    queryDB.getUserInfoFromDB(userID,timetableURL,function(timetableString){  
+      var skippedLessonsURL = semTimetableFragment + ':skippedLessons';
+      queryDB.getUserInfoFromDB(userID,skippedLessonsURL, function(skippedLessons){
+        self.trigger('superview:addMember',
+          {
+            person:name,
+            timetableString:timetableString,
+            skippedLessons: skippedLessons
+        });
+      });
     });
 
 

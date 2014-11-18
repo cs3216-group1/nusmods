@@ -14,6 +14,7 @@ var TimetableView = require('../views/TimetableView');
 var _ = require('underscore');
 var config = require('../../common/config');
 var queryDB = require('../../common/utils/queryDB');
+var qs = require('qs');
 
 var navigationItem = App.request('addNavigationItem', {
   name: 'Scheduler',
@@ -54,18 +55,28 @@ module.exports = Marionette.Controller.extend({
       response = JSON.parse(response);
       var status = response['status'];
       if(status === 'connected'){
-        var semTimetableFragment = config.semTimetableFragment(semester);
-        var url = semTimetableFragment + ':queryString';
 
-        queryDB.getItemFromDB(url,function(timetableString){  
-          var searchResults = self.memberCollection.where({person:'You'});
-          if(searchResults.length){
-            //If the current user is already added to the member collection
-            var modelOfYou = searchResults[0];
-            modelOfYou.set('timetableString', timetableString);
-          }else{
-            self.memberCollection.add({person:'You', timetableString:timetableString, display: true});
-          }
+        var semTimetableFragment = config.semTimetableFragment(semester);
+        var timetableURL = semTimetableFragment + ':queryString';
+
+        queryDB.getItemFromDB(timetableURL,function(timetableString){
+
+          var skippedLessonsURL = semTimetableFragment + ':skippedLessons';
+
+          queryDB.getItemFromDB(skippedLessonsURL,function(skippedLessons){
+            var searchResults = self.memberCollection.where({person:'You'});
+
+            if(searchResults.length){
+              //If the current user is already added to the member collection
+              var modelOfYou = searchResults[0];
+              modelOfYou.set('timetableString', timetableString);
+              modelOfYou.set('skippedLessons', skippedLessons);
+            }else{
+              console.log('skippedLessons');
+              console.log(skippedLessons)
+              self.memberCollection.add({person:'You', timetableString:timetableString, skippedLessons: skippedLessons, display: true});
+            }
+          })
           // self.memberCollection.where.
           // App.mainRegion.show(timetableView);
         });
@@ -83,7 +94,7 @@ module.exports = Marionette.Controller.extend({
 
     this.memberCollection.each(function(member){
       if(member.get('display')){
-        mergingTimetables.push({person:member.get('person'),timetableString:member.get('timetableString')});
+        mergingTimetables.push({person:member.get('person'),timetableString:member.get('timetableString'),skippedLessons:member.get('skippedLessons')});
       }
     })
 
@@ -94,6 +105,8 @@ module.exports = Marionette.Controller.extend({
           var person = value.person;
           var timetable = value.timetable;
           _.each(timetable,function(lesson){
+            console.log('lesson to add');
+            console.log(lesson);
             self._addLessonToMergingGrids(person, lesson);
           });
         });
@@ -101,11 +114,9 @@ module.exports = Marionette.Controller.extend({
     });
   },
 
-  _interpreteTimetableString: function(person, timetableString){
+  _interpreteTimetableString: function(person, timetableString, skippedLessons){
     var routeModules = TimetableModuleCollection.fromQueryStringToJSON(timetableString);
     var sem = 1;
-
-
     return Promise.all(_.map(routeModules,function(module){
       var module_id = module['ModuleCode'];
 
@@ -119,8 +130,9 @@ module.exports = Marionette.Controller.extend({
         _.each(_.groupBy(module_timetable,'LessonType'),function(group){
           _.each(_.groupBy(group, 'ClassNo'), function (lessonsData) {
             _.each(lessonsData,function(lessonData){
-              var lesson = new LessonModel(_.extend({}, lessonData));
-                    lessons.add(lesson);
+              var skipped = !_.isEmpty(_.where(skippedLessons, _.pick(lessonData, 'ModuleCode', 'LessonType', 'ClassNo', 'DayText', 'StartTime')));
+              var lesson = new LessonModel(_.extend({skipped:skipped}, lessonData));
+              lessons.add(lesson);
             },this);
           },this);
         },this);
@@ -138,18 +150,20 @@ module.exports = Marionette.Controller.extend({
     return Promise.all(_.map(mergingTimetables,function(mergingTimetable){
       var person = mergingTimetable.person;
       var timetableString = mergingTimetable.timetableString;
-
-      return this._interpreteTimetableString(person,timetableString);
+      var skippedLessons = mergingTimetable.skippedLessons;
+      return this._interpreteTimetableString(person,timetableString,skippedLessons);
     },this));
   },
 
   _addLessonToMergingGrids: function(person, lesson){
     var indexes = this._getMappedGridIndexes(lesson);
-    _.each(indexes,function(index){
-      var temp = {};
-      temp[person] = lesson;
-      this._addInfoToGrid(index,temp);
-    },this);
+    if(lesson.get('skipped') === false){
+      _.each(indexes,function(index){
+        var temp = {};
+        temp[person] = lesson;
+        this._addInfoToGrid(index,temp);
+      },this);
+    }
   },
 
   _addInfoToGrid: function(GridIndex,info){
@@ -175,4 +189,9 @@ module.exports = Marionette.Controller.extend({
       return lesson.get("dayAbbrev") + index;
     });
   }
+
+  // _parseSkippedLessonsString: function(skippedLessonsString){
+  //   var skippedLessons = qs.parse(skippedLessonsString);
+  //   return skippedLessons;
+  // }
 });
